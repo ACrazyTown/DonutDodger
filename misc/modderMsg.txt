@@ -1,0 +1,15 @@
+wassup
+
+i made the music loading dynamic and its sick and awesome and that means you can have 
+CUSTOM MUSIC baby!!!
+
+all you need to do for custom music is 
+- place a music file in "assets/music" (.ogg for desktop and .mp3 for web, or both for both)
+- open "assets/data/songList.txt" and add your song info with the format it uses:
+
+[SONG NAME]:[AUTHOR]:[FILENAME without (.ogg/.mp3) e.g. mycoolsong.mp3 would be mycoolsong]
+
+and thats it!!!
+it should work
+if it doesnt... uhhhh like report an issue or something
+ok bye bye
