@@ -1,4 +1,4 @@
-# DonutDodger
+# Donut Dodger
 
 source code for literally the best game of all time
 made with HaxeFlixel da bomb
