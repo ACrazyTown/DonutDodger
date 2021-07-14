@@ -5,6 +5,7 @@
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="Donut Dodger" file="DonutDodger" main="Main" version="1.0" company="A Crazy Town" />
+	<app title="Donut Dodger [NEWGROUNDS ver.]" file="DonutDodger" main="Main" version="1.0" company="A Crazy Town" if="ng"/>
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -32,6 +33,7 @@
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
+	<set name="BUILD_DIR" value="export/ng" if="ng" />
 
 	<source path="source" exclude="*.ogg" if="web"/>
 	<source path="source" exclude="*.mp3" unless="web"/>
@@ -45,6 +47,8 @@
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
+
+	<haxelib name="newgrounds" if="ng"/>
 
 	<!--In case you want to use the addons package-->
 	<!--<haxelib name="flixel-addons" />-->

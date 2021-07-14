@@ -1,5 +1,10 @@
 package;
 
+import utils.APIKeys;
+#if ng
+import io.newgrounds.NG;
+import utils.NGio;
+#end
 import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -14,7 +19,10 @@ import utils.HelperFunctions;
 
 class TitleState extends FlxState
 {
+	public static var ngMessage:String = "";
     public static var firstTime:Bool = true;
+	public static var versionTxt:FlxText;
+
     var skippedIntro:Bool = false;
 
 	var curSelected:Int = 0;
@@ -35,7 +43,7 @@ class TitleState extends FlxState
 		FlxG.mouse.visible = false;
 
         super.create();
-
+        
         menuGroup = new FlxTypedGroup<FlxText>();
         add(menuGroup);
 
@@ -58,21 +66,21 @@ class TitleState extends FlxState
                 tmr.destroy();
             });
 
-			new FlxTimer().start(3.10, function(tmr:FlxTimer)
+			new FlxTimer().start(3.00, function(tmr:FlxTimer)
 			{
 				introText.text = "Newgrounds is\n Swag and Awesome";
 				introText.screenCenter();
 				tmr.destroy();
 			});
 
-			new FlxTimer().start(4.70, function(tmr:FlxTimer)
+			new FlxTimer().start(4.60, function(tmr:FlxTimer)
 			{
 				introText.text = "AAA Gameplay\n -Literally Everyone";
 				introText.screenCenter();
 				tmr.destroy();
 			});
 
-            introTimer = new FlxTimer().start(6.30, function(tmr:FlxTimer)
+            introTimer = new FlxTimer().start(6.20, function(tmr:FlxTimer)
             {
                 skipIntro();
             });
@@ -97,13 +105,25 @@ class TitleState extends FlxState
     {
 		skippedIntro = true;
 
-		var logo:FlxSprite = new FlxSprite(0, 10).loadGraphic("assets/images/logo.png");
+		#if ng
+		trace("NGio is active");
+
+		var ng:NGio = new NGio(APIKeys.AppID, APIKeys.EncKey, FlxG.save.data.sessionID);
+		#end
+
+		var logo:FlxSprite = new FlxSprite(0, 20).loadGraphic("assets/images/logo.png");
 		logo.screenCenter(X);
 		logo.antialiasing = true;
 		add(logo);
 
-		var versionTxt:FlxText = new FlxText(0, (FlxG.height - 20), 0, "v" + GameInfo.gameVer, 14);
+        #if ng
+		versionTxt = new FlxText(0, (FlxG.height - 20), 0, "v" + GameInfo.gameVer + " [Not logged in (NG)]", 14);
+        #else
+		versionTxt = new FlxText(0, (FlxG.height - 20), 0, "v" + GameInfo.gameVer, 14);
+        #end
 		add(versionTxt);
+
+		GameInfo.getLatestVersion();
 
 		for (i in 0...menuOptions.length)
 		{
@@ -127,9 +147,20 @@ class TitleState extends FlxState
     }
 
 	override public function update(elapsed:Float)
-	{    
+	{
         if (skippedIntro)
         {
+            #if ng
+                if (NGio.loggedIn)
+				    //versionTxt.text = " + NG.core.user.name + ";
+				    versionTxt.text = GameInfo.gameVer + " [Logged in (NG)]";
+                else
+				    versionTxt.text = GameInfo.gameVer + " [Not logged in (NG)]";
+            #end
+
+            if (!FlxG.sound.music.playing)
+				FlxG.sound.playMusic("assets/music/title/title" + GameInfo.audioExtension, 0.7);
+
             if (FlxG.keys.anyJustPressed([UP, W]))
                 changeSelection(-1);
 

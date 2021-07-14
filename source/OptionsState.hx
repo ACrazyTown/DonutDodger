@@ -1,12 +1,17 @@
 package;
 
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
+import openfl.Lib;
+
 import flixel.FlxG;
 import flixel.FlxState;
-import openfl.Lib;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.group.FlxGroup.FlxTypedGroup;
+
 import utils.GameInfo;
+import utils.HelperFunctions;
+import utils.NGio;
+import utils.APIKeys;
 
 class OptionsState extends FlxState
 {
@@ -14,16 +19,24 @@ class OptionsState extends FlxState
 	// but there are only like 2 options so i couldnt care less
 	// i'll improve it in a later update when there's actualy MORE shit
 	var showFPS:Bool = FlxG.save.data.showFPS;
+	var altHitbox:Bool = FlxG.save.data.altHitboxes;
 
 	var fpsTxt:FlxText;
 
-	var optionsArray:Array<String> = ["Show FPS [ON]"];
+	#if ng
+	var optionsArray:Array<String> = ["Show FPS [ON]", "Alt Hitbox System [OFF]", "Login to NG", "\nReturn"];
+	#else
+	var optionsArray:Array<String> = ["Show FPS [ON]", "Alt Hitbox System [OFF]", "\nReturn"];
+	#end
 	var optionsTxtGroup:FlxTypedGroup<FlxText>;
 
 	var curSelected:Int = 0;
+	var maxInt:Int;
 
 	override public function create()
 	{
+		maxInt = HelperFunctions.lengthToInt(optionsArray.length);
+
 		super.create();
 
 		optionsTxtGroup = new FlxTypedGroup<FlxText>();
@@ -42,11 +55,6 @@ class OptionsState extends FlxState
 			optionsTxtGroup.add(optionsTxt);
 		}
 
-		var returnTxt:FlxText = new FlxText(0, (FlxG.height - 40), 0, "(Press ESC to return to the Menu)", 18);
-		returnTxt.screenCenter(X);
-		returnTxt.alpha = 0.75;
-		add(returnTxt);
-
 		changeOption(0, true);
 		updateDisplay();
 	}
@@ -58,13 +66,11 @@ class OptionsState extends FlxState
 			setOption(curSelected);
 		}
 
-		/*
 		if (FlxG.keys.anyJustPressed([UP, W]))
 			changeOption(-1);
 
 		if (FlxG.keys.anyJustPressed([DOWN, S]))
 			changeOption(1);
-		*/
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
@@ -80,8 +86,8 @@ class OptionsState extends FlxState
 		curSelected += change;
 
 		if (curSelected < 0)
-			curSelected = 1;
-		if (curSelected > 1)
+			curSelected = optionsArray.length;
+		if (curSelected > optionsArray.length)
 			curSelected = 0;
 
 		optionsTxtGroup.forEach(function(txt:FlxText)
@@ -106,7 +112,22 @@ class OptionsState extends FlxState
 						txt.text = "Show FPS [ON]";
 					else
 						txt.text = "Show FPS [OFF]";
+
+				case 1:
+					if (FlxG.save.data.altHitboxes == true)
+						txt.text = "Alt Hitbox System [ON]";
+					else
+						txt.text = "Alt Hitbox System [OFF]";
+				#if ng
+				case 2:
+					if (NGio.loggedIn)
+						txt.text = "Already logged in to NG";
+					else
+						txt.text = "Login to NG";
+				#end
 			}
+		
+			txt.screenCenter(X);
 		});
 	}
 
@@ -122,6 +143,26 @@ class OptionsState extends FlxState
 
 				FlxG.save.data.showFPS = showFPS;
 				(cast(Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.showFPS);
+
+			case 1:
+				if (altHitbox == true)
+					altHitbox = false;
+				else
+					altHitbox = true;
+
+				FlxG.save.data.altHitboxes = altHitbox;
+				trace("Toggled the Alt Hitbox System!");
+			
+			#if ng
+			case 2:
+				if (NGio.loggedIn)
+					trace("Already logged in with NG!");
+				else
+					var ng:NGio = new NGio(APIKeys.AppID, APIKeys.EncKey);
+			#end
+
+			case maxInt:
+				FlxG.switchState(new TitleState());
 		}
 
 		FlxG.save.flush();

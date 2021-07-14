@@ -24,14 +24,19 @@ class PlayState extends FlxState
 	public static var aliveTime:Float;
 	public static var spawnTimer:FlxTimer;
 
+	public static var destroyedDonuts:Int;
+
+	public static var player:Player;
+
 	var bullets:FlxTypedGroup<Bullet>;
-	var player:Player;
 
 	var nowPlaying:NowPlaying;
 
 	override public function create()
 	{
 		aliveTime = 0;
+		destroyedDonuts = 0;
+
 		FlxG.worldBounds.set(0, 0);
 
 		GameInfo.initSave();
@@ -78,12 +83,21 @@ class PlayState extends FlxState
 			initSubstate(new PauseSubstate());
 		}
 
+		if (FlxG.keys.justPressed.NINE)
+		{
+			if (FlxG.debugger.drawDebug)
+				FlxG.debugger.drawDebug = false;
+			else
+				FlxG.debugger.drawDebug = true;
+		}
+
 		bullets.forEachAlive(function(bullet:Bullet)
 		{
 			if (!bullet.isOnScreen(FlxG.camera) && bullet.y > 480)
 			{
 				//trace("killed a bullet lmao");
 				bullet.kill();
+				destroyedDonuts++;
 			}
 
 			if (FlxG.collide(player, bullet))

@@ -1,12 +1,20 @@
 package utils;
 
+#if ng
+import io.newgrounds.NG;
+#end
+
+import haxe.Http;
+
 import flixel.FlxG;
 
 import utils.HelperFunctions;
 
+using StringTools;
+
 class GameInfo 
 {
-    public static var gameVer:String = "1.0";
+    public static var gameVer:String = "1.0.1";
 
     // 0 - EASY, 1 - NORMAL, 2 - HARD
     public static var gameDifficulty:Int = 1;
@@ -16,6 +24,7 @@ class GameInfo
     public static var bulletTimerTime:Float = 0.50;
 
     public static var playerMoveVelocity:Int = 150;
+    //public static var useAltHitbox:Bool = FlxG.save.data.altHitboxes;
 
     // extension shit lmao
     #if desktop
@@ -35,8 +44,8 @@ class GameInfo
                 bulletMoveVelocity = 130;
                 bulletTimerTime = 0.35;
             case 2:
-                bulletMoveVelocity = 150;
-                bulletTimerTime = 0.12;
+                bulletMoveVelocity = 160;
+                bulletTimerTime = 0.10;
 
         }
     }
@@ -49,6 +58,51 @@ class GameInfo
         if (FlxG.save.data.showFPS == null)
             FlxG.save.data.showFPS = true;
 
+		if (FlxG.save.data.altHitboxes == null)
+			FlxG.save.data.altHitboxes = true;
+
         FlxG.save.flush();
+    }
+
+    public static function getLatestVersion()
+    {
+		var versionRequest = new Http("https://raw.githubusercontent.com/ACrazyTown/DonutDodger/main/latest.version");
+
+        versionRequest.onData = function(latestVer:String)
+        {
+            latestVer = latestVer.trim();
+            var latestVerInt:Int = Std.parseInt(latestVer.replace(".", ""));
+            trace(latestVerInt);
+
+            var gameVerInt:Int = Std.parseInt(gameVer.replace(".", ""));
+            trace(gameVerInt);
+
+            trace("Latest Version: " + latestVer + "|");
+            trace("Current Version: " + gameVer + "|");
+
+            if (gameVerInt > latestVerInt)
+            {
+                trace("Game Version is bigger than Latest Version ???");
+            }
+
+            if (gameVerInt < latestVerInt)
+            {
+                trace("Outdated version!");
+                TitleState.versionTxt.text += " [OUTDATED]";
+            }
+
+            if (gameVerInt == latestVerInt)
+            {
+                trace("Game Version is the same as the Latest Version, ignoring!");
+            }
+        }
+
+        versionRequest.onError = function(error)
+        {
+            trace('Failed to fetch latest version! Error: ' + error);
+            gameVer = gameVer + " (FAILED TO FETCH LATEST VER.)";
+        }
+
+        versionRequest.request();
     }
 }

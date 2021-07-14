@@ -32,4 +32,11 @@ class HelperFunctions
 
 		return textList;
 	}
+
+	public static function lengthToInt(arrayLength:Int)
+	{
+		var returnedInt:Int = arrayLength;
+
+		return returnedInt;
+	}
 }

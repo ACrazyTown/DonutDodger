@@ -1,6 +1,7 @@
 package;
 
 import sys.thread.Thread;
+import sys.FileSystem;
 
 import flixel.FlxG;
 import flixel.FlxState;
@@ -8,6 +9,8 @@ import flixel.text.FlxText;
 
 import utils.HelperFunctions;
 import utils.GameInfo;
+
+using StringTools;
 
 class CacheState extends FlxState
 {
@@ -26,6 +29,23 @@ class CacheState extends FlxState
 
 	function cache()
 	{
+		var imageList = [];
+
+		trace("Caching Graphics...");
+
+		for (i in FileSystem.readDirectory(FileSystem.absolutePath("assets/images")))
+		{
+			if (!i.endsWith(".png"))
+				continue;
+			imageList.push(i);
+		}
+
+		for (i in imageList)
+		{
+			FlxG.bitmap.add("assets/images/" + i);
+			trace("Cached: " + i);
+		}
+
 		trace("Caching Music...");
 
 		var songListFile = HelperFunctions.parseTextFile("assets/data/songList.txt");
