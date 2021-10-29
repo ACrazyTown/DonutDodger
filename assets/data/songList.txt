@@ -1,5 +1,5 @@
-Toshiba Satellite C55:A Crazy Town:toshiba
-Donut Shop (Inst.):A Crazy Town:donutshopinst
-title.ogg:A Crazy Town:title/title
-Allergy (Inst.):A Crazy Town:allergyinst
-Untitled Track:A Crazy Town:untitledtrack
+Toshiba Satellite C55:A Crazy Town:toshiba:170
+Donut Shop (Inst.):A Crazy Town:donutshopinst:160
+title.ogg:A Crazy Town:title/title:150
+Allergy (Inst.):A Crazy Town:allergyinst:210
+Untitled Track:A Crazy Town:untitledtrack:280

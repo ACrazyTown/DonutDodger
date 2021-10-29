@@ -4,7 +4,9 @@ package utils;
 import io.newgrounds.NG;
 #end
 
+#if !hl
 import haxe.Http;
+#end
 
 import flixel.FlxG;
 
@@ -14,45 +16,35 @@ using StringTools;
 
 class GameInfo 
 {
-    public static var gameVer:String = "1.0.1";
+	// extension shit lmao
+	#if desktop
+	public static var audioExtension:String = ".ogg";
+	#else
+	public static var audioExtension:String = ".mp3";
+	#end
+
+    public static var gameVer:String = "1.1";
+    public static var gotLatestVer:Bool = false;
+    public static var verType:Int = 0;
 
     // 0 - EASY, 1 - NORMAL, 2 - HARD
-    public static var gameDifficulty:Int = 1;
+   // public static var gameDifficulty:Int = 1;
+    public static var curDifficulty:Int = 0;
     //public static var gameStyle:Int = 1; - maybe one day
 
-    public static var bulletMoveVelocity:Int = 75;
+    public static var bulletMoveVelocity:Float = 75;
     public static var bulletTimerTime:Float = 0.50;
 
     public static var playerMoveVelocity:Int = 150;
-    //public static var useAltHitbox:Bool = FlxG.save.data.altHitboxes;
 
-    // extension shit lmao
-    #if desktop
-    public static var audioExtension:String = ".ogg";
-    #else
-	public static var audioExtension:String = ".mp3";
-    #end
-
-    public static function adjustByDiff()
-    {
-        switch (gameDifficulty)
-        {
-            case 0:
-                bulletMoveVelocity = 80;
-                bulletTimerTime = 0.55;
-            case 1:
-                bulletMoveVelocity = 130;
-                bulletTimerTime = 0.35;
-            case 2:
-                bulletMoveVelocity = 160;
-                bulletTimerTime = 0.10;
-
-        }
-    }
+    public static var equippedPowerup:Int = Std.int(Math.NEGATIVE_INFINITY);
 
     public static function initSave()
     {
-        if (FlxG.save.data.bestTime == null)
+        if (FlxG.save.data.equippedPowerup == null)
+            FlxG.save.data.equippedPowerup = Std.int(Math.NEGATIVE_INFINITY);
+
+       if (FlxG.save.data.bestTime == null)
             FlxG.save.data.bestTime = 0;
 
         if (FlxG.save.data.showFPS == null)
@@ -61,11 +53,33 @@ class GameInfo
 		if (FlxG.save.data.altHitboxes == null)
 			FlxG.save.data.altHitboxes = true;
 
+        if (FlxG.save.data.points == null)
+            FlxG.save.data.points = 0;
+
+        if (FlxG.save.data.autoPause == null)
+            FlxG.save.data.autoPause = true;
+
+        FlxG.autoPause = FlxG.save.data.autoPause;
+        GameInfo.equippedPowerup = FlxG.save.data.equippedPowerup;
+
         FlxG.save.flush();
+    }
+
+    public static function resetSave()
+    {
+        FlxG.save.data.equippedPowerup = Std.int(Math.NEGATIVE_INFINITY);
+        FlxG.save.data.bestTime = 0;
+        FlxG.save.data.showFPS = true;
+        FlxG.save.data.altHitboxes = true;
+        FlxG.save.data.points = 0;
+        FlxG.save.data.autoPause = false;
+
+        trace("Should've reset data!!");
     }
 
     public static function getLatestVersion()
     {
+        #if VERCHECK // have to make this a conditional otherwise hashlink will fuck everything
 		var versionRequest = new Http("https://raw.githubusercontent.com/ACrazyTown/DonutDodger/main/latest.version");
 
         versionRequest.onData = function(latestVer:String)
@@ -77,23 +91,32 @@ class GameInfo
             var gameVerInt:Int = Std.parseInt(gameVer.replace(".", ""));
             trace(gameVerInt);
 
-            trace("Latest Version: " + latestVer + "|");
-            trace("Current Version: " + gameVer + "|");
+            if (latestVerInt < 100)
+                latestVerInt = latestVerInt * 10;
+
+            if (gameVerInt < 100)
+                gameVerInt = gameVerInt * 10;
+
+            trace("Latest Version: " + latestVer);
+            trace("Current Version: " + gameVer );
 
             if (gameVerInt > latestVerInt)
             {
-                trace("Game Version is bigger than Latest Version ???");
+                trace("Game Ver > Latest Ver??? Probably a development build/mod??");
+				verType = 2;
             }
 
             if (gameVerInt < latestVerInt)
             {
-                trace("Outdated version!");
+                trace("outdated :(");
+				verType = 1;
                 TitleState.versionTxt.text += " [OUTDATED]";
             }
 
             if (gameVerInt == latestVerInt)
             {
-                trace("Game Version is the same as the Latest Version, ignoring!");
+                trace("All up to date, swag!");
+                verType = 0;
             }
         }
 
@@ -104,5 +127,8 @@ class GameInfo
         }
 
         versionRequest.request();
+        #else
+        trace("no ver checkin i guess");
+        #end
     }
 }

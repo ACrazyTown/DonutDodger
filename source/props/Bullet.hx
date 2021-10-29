@@ -8,14 +8,16 @@ import utils.GameInfo;
 class Bullet extends FlxSprite
 {
 	public static var useAltHitbox:Bool;
+    public var donutType:Int = 0;
 
-    public function new(x:Float)
+    public function new(x:Float, ?type:Int = 0)
     {
 		useAltHitbox = FlxG.save.data.altHitboxes;
-
+        donutType = type;
+        
         super(x);
 
-        loadGraphic("assets/images/donut.png");
+        loadGraphic(getImageByType(type));
 		velocity.y = 0;
 
 		if (useAltHitbox)
@@ -28,6 +30,16 @@ class Bullet extends FlxSprite
 		}
 
         move();
+    }
+
+    function getImageByType(donutType:Int)
+    {
+        var imagePath = "assets/images/bullet/donut";
+
+        if (donutType > 4)
+            donutType = 0;
+
+        return imagePath + donutType + ".png";
     }
 
     public function move()

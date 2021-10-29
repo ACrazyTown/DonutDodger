@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -21,21 +22,26 @@ class PauseSubstate extends FlxSubState
     var pausedMusic:Bool = false;
 
     public function new()
-    {   
-        super();
+    {
+		super();
+
+        //persistentDraw = persistentUpdate = false;
 
         FlxG.sound.play("assets/sounds/pause" + GameInfo.audioExtension);
 
-		PlayState.spawnTimer.active = false;
+		//PlayState.spawnTimer.active = false;
 
-        if (NowPlaying.activeTimer)
-            NowPlaying.tweenTimer.active = false;
+        //if (NowPlaying.activeTimer)
+        //    NowPlaying.tweenTimer.active = false;
+
+        if (FlxTimer.globalManager.active)
+            FlxTimer.globalManager.active = false;
 
         if (NowPlaying.playingMusic)
             FlxG.sound.music.pause();
             pausedMusic = true;
 
-        var overlay:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+        var overlay:FlxSprite = new FlxSprite(0,0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
         overlay.alpha = 0.7;
         add(overlay);
 
@@ -56,7 +62,7 @@ class PauseSubstate extends FlxSubState
 			pauseTxtGroup.add(controlsTxt);
         }
 
-        changeSelection(0, true);
+        changeSelection();
     }
 
     override function update(elapsed:Float)
@@ -71,12 +77,13 @@ class PauseSubstate extends FlxSubState
         {
             doOption();
         }
+
+        super.update(elapsed);
     }
 
-    function changeSelection(change:Int = 0, ?noSound:Bool = false)
+    function changeSelection(change:Int = 0)
     {
-		if (!noSound)
-			FlxG.sound.play("assets/sounds/select" + GameInfo.audioExtension);
+		FlxG.sound.play("assets/sounds/select" + GameInfo.audioExtension);
 
 		curSelected += change;
 
@@ -98,21 +105,24 @@ class PauseSubstate extends FlxSubState
 
     function doOption()
     {
+        if (!FlxTimer.globalManager.active)
+            trace("FUCK PENIS SHIT BIRTCH");
+            FlxTimer.globalManager.active = true;
+
         switch (curSelected)
         {
             case 0:
-				PlayState.spawnTimer.active = true;
-
-				if (!NowPlaying.tweenTimer.active)
-					NowPlaying.tweenTimer.active = true;
-
+				//PlayState.spawnTimer.active = true;
                 if (pausedMusic)
                     FlxG.sound.music.resume();
 
                 close();
+
             case 1:
                 FlxG.resetState();
+
             case 2:
+                trace("ummmmm");
                 FlxG.switchState(new TitleState());
         }
     }

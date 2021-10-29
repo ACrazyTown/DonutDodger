@@ -48,7 +48,9 @@ class NGio
     {
         trace("[NGio] Logged in as: " + NG.core.user.name);
         loggedIn = true;
+        
         FlxG.save.data.sessionID = NG.core.sessionId;
+        FlxG.save.flush();
 
         NG.core.requestMedals(onMedalFetch);
 		NG.core.requestScoreBoards(onBoardsFetch);
@@ -65,6 +67,8 @@ class NGio
             trace("Name: " + medal.name);
             trace("Description: " + medal.description);
             trace("-------------------------");
+
+            APIKeys.medals.push(medal);
         }
 
         if (loggedIn)
@@ -120,21 +124,36 @@ class NGio
     {
         if (loggedIn)
         {
-            if (NG.core.scoreBoards.exists(boardID))
+            try
             {
-                var scoreboard:ScoreBoard = NG.core.scoreBoards.get(boardID);
-				//var score = Std.parseInt(Std.string(scoreFloat).replace(".", "")) * 1000;
-                var ngScore = scoreFloat * 1000;
-                var score = Std.parseInt(Std.string(ngScore).replace(".", ""));
-
-				trace("-- [NGio] Posting Score --");
-                trace("Score: " + score);
-                trace("--------------------------");
-
-                scoreboard.postScore(score);
-                trace("[NGio] Posted score!");
+                if (NG.core.scoreBoards.exists(boardID))
+                    {
+                        var scoreboard:ScoreBoard = NG.core.scoreBoards.get(boardID);
+                        //var score = Std.parseInt(Std.string(scoreFloat).replace(".", "")) * 1000;
+                        var ngScore = scoreFloat * 1000;
+                        var score = Std.parseInt(Std.string(ngScore).replace(".", ""));
+        
+                        trace("-- [NGio] Posting Score --");
+                        trace("Score: " + score);
+                        trace("--------------------------");
+        
+                        scoreboard.postScore(score);
+                        trace("[NGio] Posted score!");
+                    }
+            }
+            catch (e)
+            {
+                trace("SHIT!!! I CRASHED!!!!!");
+                trace("SEND THIS TO A CRAZY TOWN:");
+                trace(e);
             }
         }
+    }
+
+    public static function logEvent(event:String)
+    {
+        NG.core.calls.event.logEvent(event).send();
+        trace('should have logged: ' + event);
     }
 }
 #end

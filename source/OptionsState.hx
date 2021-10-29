@@ -1,96 +1,100 @@
 package;
 
-import openfl.Lib;
-
+import flixel.tweens.FlxEase;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.util.FlxColor;
 
 import utils.GameInfo;
-import utils.HelperFunctions;
 import utils.NGio;
-import utils.APIKeys;
 
-class OptionsState extends FlxState
+import props.Background;
+
+class OptionsState extends BeatState
 {
-	// this entire file is hard coded and shit
-	// but there are only like 2 options so i couldnt care less
-	// i'll improve it in a later update when there's actualy MORE shit
-	var showFPS:Bool = FlxG.save.data.showFPS;
-	var altHitbox:Bool = FlxG.save.data.altHitboxes;
-
-	var fpsTxt:FlxText;
-
-	#if ng
-	var optionsArray:Array<String> = ["Show FPS [ON]", "Alt Hitbox System [OFF]", "Login to NG", "\nReturn"];
-	#else
-	var optionsArray:Array<String> = ["Show FPS [ON]", "Alt Hitbox System [OFF]", "\nReturn"];
-	#end
-	var optionsTxtGroup:FlxTypedGroup<FlxText>;
+    var optionCategories:Array<String> = ["SETTINGS", "\nRETURN"];
+    var optionCategoryGroup:FlxTypedGroup<FlxText>;
 
 	var curSelected:Int = 0;
-	var maxInt:Int;
 
-	override public function create()
-	{
-		maxInt = HelperFunctions.lengthToInt(optionsArray.length);
+    var isCategory:Bool = false;
 
-		super.create();
+    var bg:Background;
 
-		optionsTxtGroup = new FlxTypedGroup<FlxText>();
-		add(optionsTxtGroup);
+    override function create()
+    {
+        #if ng
+        if (NGio.loggedIn)
+		    optionCategories = ["SETTINGS", "LOGOUT", "\nRETURN"];
+        else
+            optionCategories = ["SETTINGS", "LOGIN", "\nRETURN"];
+        #end
 
-		var optionTitle:FlxText = new FlxText(0, 80, 0, "OPTIONS", 36);
+        trace(optionCategories);
+
+        //FlxG.camera.zoom = 0.1;
+
+        bg = new Background(-5.5, -25.8, "assets/images/bg/background.png");
+		bg.addAdditionalImageAssets([[-11.35, -53.15]], [['assets/images/bg/circles.png']]);
+        //bg.makeAdditionalAssets([[0,0]], [[FlxG.width, FlxG.height]], [FlxColor.BLACK], [0.15]);
+		//bg.tweenAsset(0, {bg.additionalAssets[0].y: -836.55}, 75, null, true);
+        //bg.tweenAsset(0, {bg.y: 1;}, 1, {ease: FlxEase.expoIn}, true);
+        bg.tweenAsset(bg.additionalAssets[0], {y: -836.55}, 35, null, true);
+        add(bg);
+
+        optionCategoryGroup = new FlxTypedGroup<FlxText>();
+        add(optionCategoryGroup);
+
+		var optionTitle:FlxText = new FlxText(0, 60, 0, "OPTIONS", 36);
+		optionTitle.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
 		optionTitle.screenCenter(X);
 		add(optionTitle);
 
-		for (i in 0...optionsArray.length)
-		{
-			var optionsTxt:FlxText = new FlxText(0, (i * 40), 0, optionsArray[i], 24);
-			optionsTxt.ID = i;
-			optionsTxt.y += optionTitle.y + 140;
-			optionsTxt.screenCenter(X);
-			optionsTxtGroup.add(optionsTxt);
-		}
+        for (i in 0...optionCategories.length)
+        {
+            var optionText:FlxText = new FlxText(0, (i * 60), 0, optionCategories[i], 28);
+			optionText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
+            optionText.ID = i;
+            optionText.y += optionTitle.y + 120;
+            optionText.screenCenter(X);
+            optionCategoryGroup.add(optionText);
+        }
 
-		changeOption(0, true);
-		updateDisplay();
-	}
+        changeSelection();
 
-	override function update(elapsed:Float)
-	{
-		if (FlxG.keys.justPressed.ENTER)
-		{
-			setOption(curSelected);
-		}
+		super.create();
+    }  
+
+    override function update(elapsed:Float):Void
+    {
+        super.update(elapsed);
 
 		if (FlxG.keys.anyJustPressed([UP, W]))
-			changeOption(-1);
+			changeSelection(-1);
 
 		if (FlxG.keys.anyJustPressed([DOWN, S]))
-			changeOption(1);
+			changeSelection(1);
 
-		if (FlxG.keys.justPressed.ESCAPE)
-		{
-			FlxG.switchState(new TitleState());
-		}
-	}
+        if (FlxG.keys.justPressed.ENTER)
+        {
+            doOption();
+        }
+    }
 
-	function changeOption(change:Int = 0, ?noSound:Bool = false)
+	function changeSelection(change:Int = 0)
 	{
-		if (!noSound)
-			FlxG.sound.play("assets/sounds/select" + GameInfo.audioExtension);
+		FlxG.sound.play("assets/sounds/select" + GameInfo.audioExtension);
 
 		curSelected += change;
 
 		if (curSelected < 0)
-			curSelected = optionsArray.length;
-		if (curSelected > optionsArray.length)
+			curSelected = (optionCategories.length - 1);
+		if (curSelected > (optionCategories.length - 1))
 			curSelected = 0;
 
-		optionsTxtGroup.forEach(function(txt:FlxText)
+		optionCategoryGroup.forEach(function(txt:FlxText)
 		{
 			txt.color = FlxColor.WHITE;
 
@@ -99,73 +103,35 @@ class OptionsState extends FlxState
 				txt.color = FlxColor.YELLOW;
 			}
 		});
-	}
+    }
 
-	function updateDisplay()
-	{
-		optionsTxtGroup.forEach(function(txt:FlxText)
-		{
-			switch (txt.ID)
-			{
-				case 0:
-					if (FlxG.save.data.showFPS == true)
-						txt.text = "Show FPS [ON]";
-					else
-						txt.text = "Show FPS [OFF]";
+    function doOption()
+    {
+        #if ng
+        switch (curSelected)
+        {
+            case 1:
+                trace("ATTEMPTING LOGIN/LOGOUT!");
 
-				case 1:
-					if (FlxG.save.data.altHitboxes == true)
-						txt.text = "Alt Hitbox System [ON]";
-					else
-						txt.text = "Alt Hitbox System [OFF]";
-				#if ng
-				case 2:
-					if (NGio.loggedIn)
-						txt.text = "Already logged in to NG";
-					else
-						txt.text = "Login to NG";
-				#end
-			}
-		
-			txt.screenCenter(X);
-		});
-	}
-
-	function setOption(selected:Int)
-	{
-		switch (selected)
+            case 2:
+                FlxG.switchState(new TitleState());
+        }
+        #else
+		switch (curSelected)
 		{
 			case 0:
-				if (showFPS == true)
-					showFPS = false;
-				else
-					showFPS = true;
-
-				FlxG.save.data.showFPS = showFPS;
-				(cast(Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.showFPS);
+				super.openSubState(new OptionsSubstate(curSelected, bg.additionalAssets[0].y));
 
 			case 1:
-				if (altHitbox == true)
-					altHitbox = false;
-				else
-					altHitbox = true;
-
-				FlxG.save.data.altHitboxes = altHitbox;
-				trace("Toggled the Alt Hitbox System!");
-			
-			#if ng
-			case 2:
-				if (NGio.loggedIn)
-					trace("Already logged in with NG!");
-				else
-					var ng:NGio = new NGio(APIKeys.AppID, APIKeys.EncKey);
-			#end
-
-			case maxInt:
 				FlxG.switchState(new TitleState());
 		}
+        #end
+    }
 
-		FlxG.save.flush();
-		updateDisplay();
-	}
+    function switchToCategory()
+    {
+        isCategory = true;
+
+        optionCategoryGroup.clear();
+    }
 }
