@@ -40,9 +40,10 @@
 	<assets path="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets" exclude="*.mp3" unless="web"/>
 
-	<assets path='LICENSE' rename='LICENSE.txt' />
+	<assets path='LICENSE' rename='LICENSE' />
 	<assets path='README.md' rename='README.txt' />
 	<assets path='misc/modderMsg.txt' rename='message for modders.txt' />
+	<assets path='misc/CHANGELOG.md' rename='CHANGELOG.txt' />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 

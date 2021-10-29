@@ -9,7 +9,6 @@ import flixel.text.FlxText;
 import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
 
-import utils.HelperFunctions;
 import utils.GameInfo;
 
 using StringTools;

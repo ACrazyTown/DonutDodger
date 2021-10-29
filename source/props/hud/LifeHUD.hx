@@ -1,7 +1,6 @@
 package props.hud;
 
 import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.group.FlxSpriteGroup;
 
 class LifeHUD extends FlxSpriteGroup

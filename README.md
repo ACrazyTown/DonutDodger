@@ -11,7 +11,7 @@ made with HaxeFlixel da bomb
 
 ### Special Thanks
 
-[KadeDev](https://twitter.com/KadeDeveloper) & [ninja_muffin99](https://twitter.com/ninja_muffin99) - sum code for HelperFunctions, you guys are pog af
+[KadeDev](https://twitter.com/KadeDeveloper) & [ninja_muffin99](https://twitter.com/ninja_muffin99) - sum code for HelperFunctions
 
 All SFX was made with [**sfxr**](https://www.drpetter.se/project_sfxr.html)
 

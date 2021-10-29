@@ -3,12 +3,8 @@ package props;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.text.FlxText;
 import flixel.group.FlxSpriteGroup;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase.EaseFunction;
-import flixel.FlxBasic;
 
 /*
 * This entire file is somewhat broken, lol!

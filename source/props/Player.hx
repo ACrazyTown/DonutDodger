@@ -1,9 +1,5 @@
 package props;
 
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
 

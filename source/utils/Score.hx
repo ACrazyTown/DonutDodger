@@ -1,7 +1,6 @@
 package utils;
 
 import flixel.FlxBasic;
-import flixel.FlxG;
 
 class Score extends FlxBasic
 {

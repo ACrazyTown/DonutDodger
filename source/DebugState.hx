@@ -1,14 +1,10 @@
 package;
 
 import utils.Conductor;
-import flixel.math.FlxAngle;
-import openfl.Lib;
 import utils.GameInfo;
 import props.hud.ScoreTracker;
-import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 #if ng
 import utils.NGio;
 #end

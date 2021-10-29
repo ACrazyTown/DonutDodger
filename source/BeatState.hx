@@ -1,15 +1,6 @@
 package;
 
-import flixel.FlxG;
-import flixel.graphics.FlxGraphic;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import flixel.util.FlxColor;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.FlxState;
-
 import utils.Conductor;
 
 /*

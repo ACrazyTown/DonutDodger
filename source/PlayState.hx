@@ -1,9 +1,6 @@
 package;
 
 import flixel.group.FlxSpriteGroup;
-import flixel.tweens.FlxEase;
-import flixel.FlxCamera;
-import props.Background;
 import props.hud.ScoreTracker;
 import props.hud.NGAchievement;
 import flixel.tweens.FlxTween;
