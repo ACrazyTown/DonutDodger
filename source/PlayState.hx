@@ -1,8 +1,8 @@
 package;
 
+import props.hud.Achievement.AchievementBox;
 import flixel.group.FlxSpriteGroup;
 import props.hud.ScoreTracker;
-import props.hud.NGAchievement;
 import flixel.tweens.FlxTween;
 import props.hud.LifeHUD;
 import flixel.util.FlxColor;
@@ -69,7 +69,7 @@ class LayeredBackground extends FlxSpriteGroup
 
 		FlxTween.tween(tempBG, {alpha: 0}, 1.75, {onComplete: function(t:FlxTween)
 		{
-			FlxG.log.add("im like done");
+			//FlxG.log.add("im like done");
 			remove(tempBG);
 			onTweenComplete();
 		}});
@@ -98,7 +98,7 @@ class PlayState extends BeatState
 
 	var diffText:FlxText;
 	var lifeHUD:LifeHUD;
-	var ngAchievement:NGAchievement;
+	var scoreText:FlxText;
 
 	// POWERUP STUFF
 	// SPEED BOOST
@@ -109,13 +109,6 @@ class PlayState extends BeatState
 	var boostTime:Float = 5;
 
 	var scoreTracker:ScoreTracker;
-
-	/*
-	var debugText1:FlxText;
-	var debugText2:FlxText;
-	var debugText3:FlxText;
-	var debugText4:FlxText;
-	*/
 
 	override public function create()
 	{
@@ -155,12 +148,14 @@ class PlayState extends BeatState
 		add(nowPlaying);
 
 		// DEBUG
-		lifeHUD = new LifeHUD(5, 15, GameInfo.equippedPowerup);
+		lifeHUD = new LifeHUD(3.5, 7.5, GameInfo.equippedPowerup);
 		lifeHUD.updateLives(player.lives);
 		add(lifeHUD);
 
-		//ngAchievement = new NGAchievement();
-		//add(ngAchievement);
+		scoreText = new FlxText(5, 0, 0, "Score: 0", 16);
+		scoreText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 3);
+		scoreText.y = (lifeHUD.y + scoreText.height) * 2;
+		add(scoreText);
 
 		diffText = new FlxText(0, 80, FlxG.width, "", 22);
 		diffText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 3);
@@ -172,16 +167,12 @@ class PlayState extends BeatState
 
 		spawnBullets();
 
-		//FlxG.camera.zoom = 0.25;
-
 		scoreTracker = new ScoreTracker(15, 120);
 		add(scoreTracker);
 
 		super.create();
 	}
 
-	//var dbgTracker:Int = 0;
-	
 	override public function update(elapsed:Float)
 	{
 		FlxG.watch.addQuick('donutsDestroyed', destroyedDonuts);
@@ -193,11 +184,6 @@ class PlayState extends BeatState
 		updatePowerup();
 
 		#if debug
-		if (FlxG.keys.justPressed.FIVE)
-		{
-			ngAchievement.showAchievement();
-		}
-
 		if (FlxG.keys.justPressed.HOME)
 		{
 			startCurveDifficulty(3);
@@ -222,6 +208,8 @@ class PlayState extends BeatState
 
 		finalScore = score.calculateScore(HelperFunctions.truncateFloat(aliveTime, 2), score.donutHits, score.reachedInsane, score.xpDonutHits);
 
+		scoreText.text = "Score: " + finalScore;
+		
 		bullets.forEach(function(b:Bullet){b.velocity.y = GameInfo.bulletMoveVelocity;});
 		spawnTimer.time = HelperFunctions.truncateFloat(GameInfo.bulletTimerTime, 2);
 
@@ -232,7 +220,7 @@ class PlayState extends BeatState
 
 		// TO DO: REPLACE THIS WITH WORLDBOUNDS???
 		if (player.x >= maxX)
-			player.x = 608;
+			player.x = maxX;
 
 		if (player.x <= 0)
 			player.x = 0;
@@ -250,10 +238,7 @@ class PlayState extends BeatState
 		#if debug
 		if (FlxG.keys.justPressed.NINE)
 		{
-			if (FlxG.debugger.drawDebug)
-				FlxG.debugger.drawDebug = false;
-			else
-				FlxG.debugger.drawDebug = true;
+			FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
 		}
 		#end
 
@@ -262,6 +247,8 @@ class PlayState extends BeatState
 			if (!bullet.isOnScreen(FlxG.camera) && bullet.y > 480)
 			{
 				bullet.kill();
+				bullets.remove(bullet);
+				bullet.destroy();
 				destroyedDonuts++;
 			}
 
@@ -309,7 +296,9 @@ class PlayState extends BeatState
 
 	function donutHit(donut:Bullet, donutType:Int)
 	{
-		donut.kill();	
+		donut.kill();
+		bullets.remove(donut);
+		donut.destroy();
 
 		switch (donutType)
 		{
@@ -368,13 +357,8 @@ class PlayState extends BeatState
 
 				player.animation.play("regen");
 
-				//FlxG.camera.focusOn(player.getGraphicMidpoint());
-				//FlxTween.tween(FlxG.camera, {zoom: 1.75}, 0.25, {ease: FlxEase.quadOut});
 				new FlxTimer().start(0.5, function(tmr:FlxTimer)
 				{
-					//FlxG.camera.focusOn(null);
-					//FlxG.camera.scroll.set();
-					//FlxTween.tween(FlxG.camera, {zoom: 1.0, x: 0, y: 0}, 0.15, {ease: FlxEase.quadOut});
 					player.animation.play("idle");
 				});
 		}
@@ -397,21 +381,20 @@ class PlayState extends BeatState
 				GameInfo.bulletMoveVelocity = 80;
 				GameInfo.bulletTimerTime = 0.55;
 
-				//changeDiffText("Welcome to Donut Dodger! \nThe game might seem easy for now but \ndon't get too comfortable...");
 				changeDiffText("Welcome to Donut Dodger!" + "\nThe game might seem easy for now but" + "\ndon't get too comfortable!");
 			case 1:
 				GameInfo.curDifficulty = 1;
 				GameInfo.bulletMoveVelocity = 140;
 				GameInfo.bulletTimerTime = 0.30;
 
-				changeDiffText("Congratulations! \nYou passed the EASIEST level in the game.\n Now you might wanna try a bit...");
+				changeDiffText("Congratulations!\nYou passed the EASIEST level in the game.\nNow you might want to try a bit...");
 
 			case 2:
 				GameInfo.curDifficulty = 2;
 				GameInfo.bulletMoveVelocity = 175;
 				GameInfo.bulletTimerTime = 0.10;
 
-				changeDiffText("Now it gets real.");
+				changeDiffText("Now it gets real...");
 
 			case 3:
 				#if ng
@@ -427,7 +410,7 @@ class PlayState extends BeatState
 
 				score.reachedInsane++;
 
-				changeDiffText("Woah. You're insane. \nGood luck passing this though!");
+				changeDiffText("Woah. You're insane.\nGood luck passing this though!");
 		}
 
 		layerBG.transition(diff);
@@ -494,9 +477,7 @@ class PlayState extends BeatState
 
 				case 1:
 					trace("speed boost");
-
-					// 119
-					// 8
+					
 					var barBackground:FlxSprite = new FlxSprite(40, FlxG.height - 80).loadGraphic("assets/images/hud/powerups/bar.png");
 					add(barBackground);
 

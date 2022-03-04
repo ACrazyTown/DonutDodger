@@ -1,0 +1,28 @@
+{
+    "gamedata": {
+        "bullet-vel": 250
+    },
+    "player": {
+        "max-angle": 35,
+        "lives": 3,
+        "sprite": "assets/images/player.png",
+        "animated": true,
+        "size": [36, 36],
+        "animation-data": [
+            ["idle", [0]], 
+            ["dead", [1]],
+            ["regen", [2]]
+        ],
+        "althitbox-data": {
+            "offsets": [4, 7],
+            "size": [27, 27]
+        }
+    },
+    "bullets": {
+        "sprites": ["assets/images/bullet/donut1.png", "assets/images/bullet/donut2.png", "assets/images/bullet/donut3.png", "assets/images/bullet/donut4.png"],
+        "althitbox-data": {
+            "offsets": [6, 6],
+            "size": [16, 16]
+        }
+    }
+}

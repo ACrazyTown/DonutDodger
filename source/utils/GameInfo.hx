@@ -10,8 +10,6 @@ import haxe.Http;
 
 import flixel.FlxG;
 
-import utils.HelperFunctions;
-
 using StringTools;
 
 class GameInfo 
@@ -23,7 +21,7 @@ class GameInfo
 	public static var audioExtension:String = ".mp3";
 	#end
 
-    public static var gameVer:String = "1.1";
+    public static var gameVer:String = "1.1.1";
     public static var gotLatestVer:Bool = false;
     public static var verType:Int = 0;
 

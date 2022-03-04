@@ -25,14 +25,7 @@ class PauseSubstate extends FlxSubState
     {
 		super();
 
-        //persistentDraw = persistentUpdate = false;
-
         FlxG.sound.play("assets/sounds/pause" + GameInfo.audioExtension);
-
-		//PlayState.spawnTimer.active = false;
-
-        //if (NowPlaying.activeTimer)
-        //    NowPlaying.tweenTimer.active = false;
 
         if (FlxTimer.globalManager.active)
             FlxTimer.globalManager.active = false;

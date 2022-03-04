@@ -5,6 +5,7 @@ import utils.GameInfo;
 import props.hud.ScoreTracker;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.text.FlxText;
 #if ng
 import utils.NGio;
 #end
@@ -13,6 +14,10 @@ class DebugState extends BeatState
 {
     var test:FlxSprite;
 	var debugObject:ScoreTracker;
+
+    #if ng
+    var ngText:FlxText;
+    #end
 
     override function create()
     {
@@ -38,6 +43,12 @@ class DebugState extends BeatState
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFFCFFFF7);
         add(bg);
 
+        #if ng
+        ngText = new FlxText(10, 10, 0, "NG Status: ?", 24);
+        ngText.color = 0xFF000000;
+        add(ngText);
+        #end
+
         test = new FlxSprite().loadGraphic("assets/images/hud/ngmedals/63898.png");
         test.screenCenter();
         add(test);
@@ -57,6 +68,10 @@ class DebugState extends BeatState
 
 		everyStep();
 		everyBeat();
+
+        #if ng
+        ngText.text = "NG Status: n";
+        #end
 
         super.update(elapsed);
 

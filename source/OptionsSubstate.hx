@@ -20,7 +20,14 @@ import props.Background;
 class OptionsSubstate extends FlxSubState
 {
     var options:Array<Dynamic> = [
-        ["Settings", [["Show FPS ON", "Show FPS OFF"], ["Better Hitbox System", "Old Hitbox System"], ["Autopause ON", "Autopause OFF"], ["\nReturn", "\nReturn"]], [FlxG.save.data.showFPS, FlxG.save.data.altHitboxes, true]]
+        ["Settings", 
+            [
+                ["Show FPS ON", "Show FPS OFF"], 
+                ["Better Hitbox System", "Old Hitbox System"], 
+                ["Autopause ON", "Autopause OFF"], 
+                ["\nReturn", "\nReturn"]], 
+                [FlxG.save.data.showFPS, FlxG.save.data.altHitboxes, FlxG.save.data.autopause]
+            ]
     ];
 
     var categoryName:String = "";
@@ -58,6 +65,8 @@ class OptionsSubstate extends FlxSubState
             changeSelection(-1);
 
         super.update(elapsed);
+
+        FlxG.save.flush();
     }
 
     function makeCategory(cat:Int)
@@ -83,9 +92,6 @@ class OptionsSubstate extends FlxSubState
 
     function doOption()
     {
-        trace(curCategory);
-        trace(curSelected);
-
         switch (curCategory)
         {
             case 0:

@@ -225,7 +225,6 @@ class GameOverSubstate extends FlxSubState
 
 			else if (PlayState.finalScore >= 1000)
 				displayScore += 25;
-
 			else
 				displayScore += 5;
 

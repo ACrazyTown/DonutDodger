@@ -1,5 +1,6 @@
 package;
 
+import lime.app.Application;
 import flixel.effects.FlxFlicker;
 import flixel.addons.transition.TransitionData;
 import flixel.addons.transition.TransitionData;
@@ -56,7 +57,7 @@ class TitleState extends BeatState
 		FlxG.mouse.visible = false;
         FlxG.save.bind("donutdodger", "acrazytown");
 
-		if (!init)
+		if (!Global.titleInit)
 		{
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
 			diamond.persist = true;
@@ -70,24 +71,35 @@ class TitleState extends BeatState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
-			init = true;
+            GameInfo.initSave();
+
+            #if ng
+            trace("NGio is active");
+
+            var ng:NGio = new NGio(APIKeys.AppID, APIKeys.EncKey, FlxG.save.data.sessionID);
+            #end
+
+			Global.titleInit = true;
 		}
-
-		GameInfo.initSave();
-
-		#if ng
-		trace("NGio is active");
-
-		var ng:NGio = new NGio(APIKeys.AppID, APIKeys.EncKey, FlxG.save.data.sessionID);
-		#end
 
 		versionTxt = new FlxText(0, (FlxG.height - 20), 0, "", 14);
 
 		#if ng
-		versionTxt.text = "v" + GameInfo.gameVer + " [Not logged in (NG)]";
-		#else
+        trace(NGio.loggedIn);
+
+        if (NGio.loggedIn)
+        {
+            versionTxt.text = "v" + GameInfo.gameVer + " [Logged in]";
+        }
+		else
+		{
+            versionTxt.text = "v" + GameInfo.gameVer + " [Not logged in]";
+        }
+        #else
 		versionTxt.text = "v" + GameInfo.gameVer + "";
         #end
+
+        trace("DUMBASS: " + FlxG.save.data.points);
 
         #if ng
 		if (NGio.loggedIn)
@@ -171,16 +183,21 @@ class TitleState extends BeatState
 
 	override public function update(elapsed:Float)
 	{
+        #if ng
+        if (NGio.loggedIn)
+        {
+            versionTxt.text = "v" + GameInfo.gameVer + " [Logged in]";
+        }
+		else
+		{
+            versionTxt.text = "v" + GameInfo.gameVer + " [Not logged in]";
+        }
+        #else
+		versionTxt.text = "v" + GameInfo.gameVer + "";
+        #end
+
         if (skippedIntro)
         {
-            #if ng
-                if (NGio.loggedIn)
-				    //versionTxt.text = " + NG.core.user.name + ";
-				    versionTxt.text = GameInfo.gameVer + " [Logged in (NG)]";
-                else
-				    versionTxt.text = GameInfo.gameVer + " [Not logged in (NG)]";
-            #end
-
             if (!FlxG.sound.music.playing)
             {
                 if (Conductor.bpm != 150)
@@ -198,12 +215,6 @@ class TitleState extends BeatState
 
             if (FlxG.keys.anyJustPressed([DOWN, S]))
                 changeSelection(1);
-
-            if (FlxG.keys.justPressed.C)
-            {
-                trace("sus in the Cadiclac");
-                FlxG.save.data.powerups = null;
-            }
 
             if (FlxG.keys.justPressed.ENTER && !transitioning)
             {

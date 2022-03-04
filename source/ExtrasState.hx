@@ -84,7 +84,6 @@ class ShopItem extends FlxSpriteGroup
 
     public function updateData()
     {
-        trace("FUCK YOUR ID ITS: " + id);
         unlocked = ShopState.powerups[id].unlocked;
         equipped = ShopState.powerups[id].equipped;
 

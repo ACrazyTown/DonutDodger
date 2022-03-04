@@ -1,5 +1,18 @@
 # Donut Dodger Changelog
 
+# 1.1.1
+## Added
+- Desktop | Resolution increase.
+
+## Changed
+- All | Fixed inconsistencies with the Menus.
+- All Newgrounds | Removed the LOGIN/LOGOUT function because it was too much and I'm fucking losing myself.
+- All | Removed leftover debugging code/comments.
+
+## Bugfixes
+- HTML5 | Fixed audio sounding muffled
+- HTML5 Newgrounds | Fixed an issue where the settings could not be accessed.
+
 # 1.1
 ## Added
 - New AWESOME UI!!!
@@ -18,7 +31,7 @@
 ## Added
 - Newgrounds API support
 ## Bugfixes
-- I forgot, just, there were some
+- I forgot, let's just say most issues from 1.0 were fixed
 
 ## 1.0
 - Initial release

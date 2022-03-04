@@ -17,7 +17,8 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="960" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="960" fps="60" background="#000000" hardware="true" vsync="false" if="desktop"/>
+	<window width="640" height="480" fps="60" background="#000000" hardware="true" vsync="false" unless="desktop"/>
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
@@ -50,6 +51,7 @@
 	<haxelib name="flixel" />
 
 	<haxelib name="newgrounds" if="ng"/>
+	<haxelib name="discord_rpc" if="desktop"/>
 
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />

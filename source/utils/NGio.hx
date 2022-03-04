@@ -129,10 +129,10 @@ class NGio
                 if (NG.core.scoreBoards.exists(boardID))
                     {
                         var scoreboard:ScoreBoard = NG.core.scoreBoards.get(boardID);
-                        //var score = Std.parseInt(Std.string(scoreFloat).replace(".", "")) * 1000;
-                        var ngScore = scoreFloat * 1000;
-                        var score = Std.parseInt(Std.string(ngScore).replace(".", ""));
-        
+                        //var score = Std.parseInt(Std.string(ngScore).replace(".", ""));
+                        // WHY WAS THIS GOOFY SHIT DOING * 1000 ?????
+                        var score = Std.int(scoreFloat);
+
                         trace("-- [NGio] Posting Score --");
                         trace("Score: " + score);
                         trace("--------------------------");

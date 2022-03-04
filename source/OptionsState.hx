@@ -1,46 +1,37 @@
 package;
 
+import flixel.FlxSubState;
+import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxColor;
 
 import utils.GameInfo;
+#if ng
+import utils.APIKeys;
 import utils.NGio;
+import io.newgrounds.NG;
+#end
 
 import props.Background;
 
 class OptionsState extends BeatState
 {
-    var optionCategories:Array<String> = ["SETTINGS", "\nRETURN"];
+    public static var optionCategories:Array<String> = ["SETTINGS", "\nRETURN"];
     var optionCategoryGroup:FlxTypedGroup<FlxText>;
 
 	var curSelected:Int = 0;
-
-    var isCategory:Bool = false;
 
     var bg:Background;
 
     override function create()
     {
-        #if ng
-        if (NGio.loggedIn)
-		    optionCategories = ["SETTINGS", "LOGOUT", "\nRETURN"];
-        else
-            optionCategories = ["SETTINGS", "LOGIN", "\nRETURN"];
-        #end
-
-        trace(optionCategories);
-
-        //FlxG.camera.zoom = 0.1;
-
         bg = new Background(-5.5, -25.8, "assets/images/bg/background.png");
 		bg.addAdditionalImageAssets([[-11.35, -53.15]], [['assets/images/bg/circles.png']]);
-        //bg.makeAdditionalAssets([[0,0]], [[FlxG.width, FlxG.height]], [FlxColor.BLACK], [0.15]);
-		//bg.tweenAsset(0, {bg.additionalAssets[0].y: -836.55}, 75, null, true);
-        //bg.tweenAsset(0, {bg.y: 1;}, 1, {ease: FlxEase.expoIn}, true);
         bg.tweenAsset(bg.additionalAssets[0], {y: -836.55}, 35, null, true);
         add(bg);
 
@@ -107,16 +98,6 @@ class OptionsState extends BeatState
 
     function doOption()
     {
-        #if ng
-        switch (curSelected)
-        {
-            case 1:
-                trace("ATTEMPTING LOGIN/LOGOUT!");
-
-            case 2:
-                FlxG.switchState(new TitleState());
-        }
-        #else
 		switch (curSelected)
 		{
 			case 0:
@@ -125,13 +106,5 @@ class OptionsState extends BeatState
 			case 1:
 				FlxG.switchState(new TitleState());
 		}
-        #end
-    }
-
-    function switchToCategory()
-    {
-        isCategory = true;
-
-        optionCategoryGroup.clear();
     }
 }

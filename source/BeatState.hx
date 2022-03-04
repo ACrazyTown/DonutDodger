@@ -76,7 +76,7 @@ class BeatState extends FlxTransitionableState
 
 		curBeat += 1;
 
-		trace("BEAT: " + curBeat);
+		//trace("BEAT: " + curBeat);
 	}
 
 	public function customStepHit():Void {}
