@@ -1,5 +1,7 @@
-package;
+package states;
 
+import states.ModdingState.ModMenuState;
+import utils.Language;
 import flixel.FlxSubState;
 import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
@@ -21,15 +23,19 @@ import props.Background;
 
 class OptionsState extends BeatState
 {
-    public static var optionCategories:Array<String> = ["SETTINGS", "\nRETURN"];
+    public static var optionCategories:Array<String> = ["SETTINGS", "MODS", "\nRETURN"];
     var optionCategoryGroup:FlxTypedGroup<FlxText>;
 
 	var curSelected:Int = 0;
 
-    var bg:Background;
+    public static var bg:Background;
 
     override function create()
     {
+		FlxG.mouse.enabled = false;
+
+		optionCategories = Language.data.OptionsState.categories;
+
         bg = new Background(-5.5, -25.8, "assets/images/bg/background.png");
 		bg.addAdditionalImageAssets([[-11.35, -53.15]], [['assets/images/bg/circles.png']]);
         bg.tweenAsset(bg.additionalAssets[0], {y: -836.55}, 35, null, true);
@@ -38,7 +44,7 @@ class OptionsState extends BeatState
         optionCategoryGroup = new FlxTypedGroup<FlxText>();
         add(optionCategoryGroup);
 
-		var optionTitle:FlxText = new FlxText(0, 60, 0, "OPTIONS", 36);
+		var optionTitle:FlxText = new FlxText(0, 60, 0, Language.data.OptionsState.options.toUpperCase(), 36);
 		optionTitle.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
 		optionTitle.screenCenter(X);
 		add(optionTitle);
@@ -104,6 +110,9 @@ class OptionsState extends BeatState
 				super.openSubState(new OptionsSubstate(curSelected, bg.additionalAssets[0].y));
 
 			case 1:
+				FlxG.switchState(new ModMenuState());
+
+			case 2:
 				FlxG.switchState(new TitleState());
 		}
     }

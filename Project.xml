@@ -4,8 +4,8 @@
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Donut Dodger" file="DonutDodger" main="Main" version="1.0" company="A Crazy Town" />
-	<app title="Donut Dodger [NEWGROUNDS ver.]" file="DonutDodger" main="Main" version="1.0" company="A Crazy Town" if="ng"/>
+	<app title="Donut Dodger" file="DonutDodger" main="Main" version="1.2" company="A Crazy Town" />
+	<app title="Donut Dodger (DEVELOPMENT BUILD)" file="DonutDodger" main="Main" version="1.2" company="A Crazy Town" if="debug"/>
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->

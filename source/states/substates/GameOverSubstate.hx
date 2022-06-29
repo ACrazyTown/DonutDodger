@@ -1,5 +1,6 @@
-package;
+package states.substates;
 
+import utils.Language;
 import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
 import flixel.FlxG;
@@ -23,7 +24,7 @@ class GameOverSubstate extends FlxSubState
 	var controlsArray:Array<String> = ["Play Again", "Return to the Menu"];
 	var controlsTxtGroup:FlxTypedGroup<FlxText>;
 
-    public var aliveTimeTruncated = HelperFunctions.truncateFloat(PlayState.aliveTime, 2);
+    public var aliveTimeTruncated:Float = 0;
 
 	var pausedMusic:Bool = false;
 
@@ -36,7 +37,12 @@ class GameOverSubstate extends FlxSubState
 	{
 		super();
 
-		//persistentUpdate = false;
+		// recalculate just in case
+		PlayState.aliveTimeEnd = Sys.time();
+		PlayState.finalTime = PlayState.aliveTimeEnd - PlayState.aliveTimeStart;
+		aliveTimeTruncated = HelperFunctions.truncateFloat(PlayState.finalTime, 2);
+
+		controlsArray = Language.data.GameOverSubstate.gameover_options;
 
 		FlxG.sound.play("assets/sounds/gameover" + GameInfo.audioExtension);
 
@@ -85,29 +91,23 @@ class GameOverSubstate extends FlxSubState
 		controlsTxtGroup = new FlxTypedGroup<FlxText>();
 		add(controlsTxtGroup);
 
-		var gameOverTxt:FlxText = new FlxText(0, 110, 0, "GAME OVER", 42);
+		var gameOverTxt:FlxText = new FlxText(0, 110, 0, Language.data.GameOverSubstate.gameover.toUpperCase(), 42);
 		gameOverTxt.screenCenter(X);
 		add(gameOverTxt);
 
-        var surviveText:FlxText = new FlxText(0, gameOverTxt.y + 80, 0, "You survived for " + aliveTimeTruncated + "s!", 26);
+        var surviveText:FlxText = new FlxText(0, gameOverTxt.y + 80, 0, '${Language.data.GameOverSubstate.survived_for} ' + aliveTimeTruncated + "s!", 26);
         surviveText.screenCenter(X);
         add(surviveText);
 
 		//var scoreText:FlxText = new FlxText(0, gameOverTxt.y + 120, 0, "Score: " + PlayState.finalScore, 24);
-		scoreText = new FlxText(0, gameOverTxt.y + 120, 0, "Score: ", 24);
+		scoreText = new FlxText(0, gameOverTxt.y + 120, 0, '${Language.data.PlayState.score}: ', 24);
 		scoreText.screenCenter(X);
 		add(scoreText);
 
-		var bestText:FlxText = new FlxText(0, gameOverTxt.y + 160, 0, "Best Time: " + FlxG.save.data.bestTime + "s", 20);
+		var bestText:FlxText = new FlxText(0, gameOverTxt.y + 160, 0, '${Language.data.GameOverSubstate.best_time}: ' + FlxG.save.data.bestTime + "s", 20);
 		bestText.screenCenter(X);
 		add(bestText);
-
-		//var debug:FlxText = new FlxText(20, FlxG.height - 40, 0, "Points gained: " + Std.int(PlayState.finalScore / 10), 24);
-		//debug.color = FlxColor.RED;
-		//add(debug);
-
-		// var controlsTxt:FlxText = new FlxText(0, gameOverTxt.y + 180, 0, "Press ENTER to play again\n" + "Or ESC to return to the Menu", 24);
-
+		
 		for (i in 0...controlsArray.length)
 		{
 			var controlsTxt:FlxText = new FlxText(0, (i * 40), 0, controlsArray[i], 24);
@@ -177,7 +177,6 @@ class GameOverSubstate extends FlxSubState
 				FlxG.resetState();
 
 			case 1:
-				trace("I REAALY SHOULD TRANSITION RN");
 				FlxG.switchState(new TitleState());
 		}
 	}

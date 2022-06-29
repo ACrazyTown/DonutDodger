@@ -16,7 +16,6 @@ class Conductor
 	public static function changeBPM(newBPM:Int)
 	{
 		bpm = newBPM;
-
 		recalculateTimes();
 	}
 

@@ -1,4 +1,4 @@
-package;
+package states.substates;
 
 import openfl.Lib;
 
@@ -24,10 +24,12 @@ class OptionsSubstate extends FlxSubState
             [
                 ["Show FPS ON", "Show FPS OFF"], 
                 ["Better Hitbox System", "Old Hitbox System"], 
-                ["Autopause ON", "Autopause OFF"], 
-                ["\nReturn", "\nReturn"]], 
-                [FlxG.save.data.showFPS, FlxG.save.data.altHitboxes, FlxG.save.data.autopause]
-            ]
+                ["Autopause ON", "Autopause OFF"],
+                ["Downscroll", "Upscroll"],
+                ["\nReturn", "\nReturn"]
+            ],
+            [FlxG.save.data.showFPS, FlxG.save.data.altHitboxes, FlxG.save.data.autopause, FlxG.save.data.scrollType]
+        ]
     ];
 
     var categoryName:String = "";
@@ -38,11 +40,13 @@ class OptionsSubstate extends FlxSubState
     var curCategory:Int = 0;
     var curSelected:Int = 0;
 
+    var bg:Background;
+
     public function new(category:Int, circleY:Float)
     {
 		super();
 
-		var bg:Background = new Background(-5.5, -25.8, "assets/images/bg/background.png");
+		bg = new Background(-5.5, -25.8, "assets/images/bg/background.png");
 		bg.addAdditionalImageAssets([[-11.35, circleY]], [['assets/images/bg/circles.png']]);
 		bg.tweenAsset(bg.additionalAssets[0], {y: -836.55}, 35, null, true);
 		add(bg);
@@ -140,6 +144,20 @@ class OptionsSubstate extends FlxSubState
 
 
                     case 3:
+                        options[curCategory][2][3] = !options[curCategory][2][3];
+                        FlxG.save.data.scrollType = options[curCategory][2][3];
+
+						optionGroup.forEach(function(txt:FlxText)
+						{
+							if (txt.ID == curSelected)
+							{
+								txt.text = options[curCategory][2][3] ? options[curCategory][1][3][0] : options[curCategory][1][3][1];
+								txt.screenCenter(X);
+							}
+						});
+
+                    case 4:
+                        OptionsState.bg.additionalAssets[0].y = this.bg.additionalAssets[0].y;
                         close();
                 }
         }

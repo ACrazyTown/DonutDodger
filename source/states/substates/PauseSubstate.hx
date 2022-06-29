@@ -1,5 +1,6 @@
-package;
+package states.substates;
 
+import utils.Language;
 import flixel.util.FlxTimer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
@@ -25,6 +26,8 @@ class PauseSubstate extends FlxSubState
     {
 		super();
 
+        pauseOptions = Language.data.PauseSubstate.pause_items;
+
         FlxG.sound.play("assets/sounds/pause" + GameInfo.audioExtension);
 
         if (FlxTimer.globalManager.active)
@@ -34,14 +37,14 @@ class PauseSubstate extends FlxSubState
             FlxG.sound.music.pause();
             pausedMusic = true;
 
-        var overlay:FlxSprite = new FlxSprite(0,0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+        var overlay:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
         overlay.alpha = 0.7;
         add(overlay);
 
 		pauseTxtGroup = new FlxTypedGroup<FlxText>();
 		add(pauseTxtGroup);
 
-        var pausedTxt:FlxText = new FlxText(0, 120, 0, "PAUSED", 42);
+        var pausedTxt:FlxText = new FlxText(0, 120, 0, Language.data.PauseSubstate.paused.toUpperCase(), 42);
         pausedTxt.screenCenter(X);
         add(pausedTxt);
 
@@ -99,7 +102,6 @@ class PauseSubstate extends FlxSubState
     function doOption()
     {
         if (!FlxTimer.globalManager.active)
-            trace("FUCK PENIS SHIT BIRTCH");
             FlxTimer.globalManager.active = true;
 
         switch (curSelected)
@@ -115,7 +117,6 @@ class PauseSubstate extends FlxSubState
                 FlxG.resetState();
 
             case 2:
-                trace("ummmmm");
                 FlxG.switchState(new TitleState());
         }
     }

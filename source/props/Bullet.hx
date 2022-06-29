@@ -3,6 +3,7 @@ package props;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
+import utils.Difficulty;
 import utils.GameInfo;
 
 class Bullet extends FlxSprite
@@ -10,12 +11,12 @@ class Bullet extends FlxSprite
 	public static var useAltHitbox:Bool;
     public var donutType:Int = 0;
 
-    public function new(x:Float, ?type:Int = 0)
+    public function new(x:Float = 0, y:Float = 0, ?type:Int = 0)
     {
 		useAltHitbox = FlxG.save.data.altHitboxes;
         donutType = type;
         
-        super(x);
+        super(x, y);
 
         loadGraphic(getImageByType(type));
 		velocity.y = 0;
@@ -44,7 +45,7 @@ class Bullet extends FlxSprite
 
     public function move()
     {
-		velocity.y = GameInfo.bulletMoveVelocity;
+		velocity.y = Difficulty.settings.donutVelocity;
     }
 
     public function stop()

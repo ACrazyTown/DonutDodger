@@ -1,0 +1,10 @@
+player:assets/images/player.png
+donut0:assets/images/bullet/donut0.png
+donut1:assets/images/bullet/donut1.png
+donut2:assets/images/bullet/donut2.png
+donut3:assets/images/bullet/donut3.png
+bg0:assets/images/bg0.png
+bg1:assets/images/bg1.png
+bg2:assets/images/bg2.png
+bg3:assets/images/bg3.png
+heart:assets/images/hud/heart.png

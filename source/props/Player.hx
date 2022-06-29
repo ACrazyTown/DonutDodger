@@ -1,5 +1,6 @@
 package props;
 
+import utils.GameAssets;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -7,8 +8,6 @@ import utils.GameInfo;
 
 class Player extends FlxSprite
 {
-    public static var useAltHitbox:Bool;
-
     public var maxAngle:Int = 35;
     public var lives:Int = 3;
 
@@ -18,13 +17,12 @@ class Player extends FlxSprite
 
     //public var boostTime:Float = 5;
 
-    public function new(x:Float, y:Float)
+    public function new(x:Float = 0, y:Float = 0)
     {
-		useAltHitbox = FlxG.save.data.altHitboxes;
         super(x, y);
 
         //loadGraphic("assets/images/player.png");
-		loadGraphic("assets/images/player.png", true, 36, 36);
+		loadGraphic(GameAssets.getAsset("player"), true, 36, 36);
         animation.add('idle', [0]);
 		animation.add('dead', [1]);
         animation.add('regen', [2]);
@@ -33,7 +31,7 @@ class Player extends FlxSprite
 
         immovable = true;
 
-        if (useAltHitbox)
+        if (FlxG.save.data.altHitboxes)
         {
             // 32
             offset.y = 7;
@@ -79,7 +77,7 @@ class Player extends FlxSprite
     {
         animation.play(anim);
         if (anim == 'dead')
-            if (useAltHitbox)
+            if (FlxG.save.data.altHitboxes)
                 offset.y = 8;
             else
                 offset.y = 1;

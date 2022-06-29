@@ -38,7 +38,7 @@ class ScoreTracker extends FlxSpriteGroup
 
     public function showScore(bonusType:String, grantAmount:Int, ?tweenTime:Float = 1.75)
     {
-		var sText:FlxText = new FlxText(x, y, 0, "Init", 24);
+		var sText:FlxText = new FlxText(x, y, 0, "Score: 0", 24);
 		sText.color = 0xFF6BC77B;
 		sText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2);
         sText.velocity.set(250, 250);

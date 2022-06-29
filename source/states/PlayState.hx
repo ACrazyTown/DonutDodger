@@ -1,6 +1,7 @@
-package;
+package states;
 
-import props.hud.Achievement.AchievementBox;
+import utils.Difficulty;
+import utils.Language;
 import flixel.group.FlxSpriteGroup;
 import props.hud.ScoreTracker;
 import flixel.tweens.FlxTween;
@@ -11,7 +12,6 @@ import flixel.FlxSubState;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.ui.FlxBar;
 
@@ -78,10 +78,15 @@ class LayeredBackground extends FlxSpriteGroup
 
 class PlayState extends BeatState
 {
-	public static var aliveTime:Float;
+	public static var instance:PlayState;
+
+	public static var aliveTimeStart:Float = 0;
+	public static var aliveTimeEnd:Float = 0;
+	public static var finalTime:Float = 0;
+
 	public static var spawnTimer:FlxTimer;
 
-	public static var destroyedDonuts:Int;
+	public static var destroyedDonuts:Int = 0;
 
 	var maxX:Float = 0;
 
@@ -90,6 +95,7 @@ class PlayState extends BeatState
 
 	var diffTransition:Bool = false;
 	var layerBG:LayeredBackground;
+
 	public static var player:Player;
 
 	var bullets:FlxTypedGroup<Bullet>;
@@ -112,19 +118,14 @@ class PlayState extends BeatState
 
 	override public function create()
 	{
-		aliveTime = 0;
-		destroyedDonuts = 0;
+		instance = this;
 
+		//Difficulty.init();
+		Difficulty.currentDifficulty = Easy;
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
-
-		GameInfo.curDifficulty = 0;
-		GameInfo.bulletMoveVelocity = 80;
-		GameInfo.bulletTimerTime = 0.55;
 
 		if (FlxG.sound.music.playing)
 			FlxG.sound.music.stop();
-
-		//FlxG.camera.zoom = 0.5;
 
 		layerBG = new LayeredBackground(0, 0, GameInfo.curDifficulty, "bg", 4);
 		add(layerBG);
@@ -134,9 +135,8 @@ class PlayState extends BeatState
 
 		score = new Score();
 
-		player = new Player(0, 0);
+		player = new Player();
 		player.screenCenter();
-
 		player.y += 150;
 		add(player);
 
@@ -147,12 +147,11 @@ class PlayState extends BeatState
 		nowPlaying = new NowPlaying();
 		add(nowPlaying);
 
-		// DEBUG
 		lifeHUD = new LifeHUD(3.5, 7.5, GameInfo.equippedPowerup);
 		lifeHUD.updateLives(player.lives);
 		add(lifeHUD);
 
-		scoreText = new FlxText(5, 0, 0, "Score: 0", 16);
+		scoreText = new FlxText(5, 0, 0, '${Language.data.PlayState.score}: 0', 16);
 		scoreText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 3);
 		scoreText.y = (lifeHUD.y + scoreText.height) * 2;
 		add(scoreText);
@@ -165,60 +164,58 @@ class PlayState extends BeatState
 
 		FlxG.watch.addQuick("curPoints", FlxG.save.data.points);
 
-		spawnBullets();
+		spawnTimer = new FlxTimer().start(Difficulty.settings.donutSpawnTime, 
+			function(tmr:FlxTimer)
+			{
+				var donutType:Int = 0;
+				var randomOffset:Int = FlxG.random.int(0, -75);
+
+				if (GameInfo.curDifficulty > 1)
+				{
+					if (FlxG.random.bool(70))
+						donutType = 1;
+					if (FlxG.random.bool(40))
+						donutType = 1;
+					if (FlxG.random.bool(25))
+						donutType = 1;
+				}
+
+				var bullet:Bullet = new Bullet(FlxG.random.int(0, 640), FlxG.save.data.scrollType == 0 ? randomOffset : Math.abs(randomOffset), donutType);
+				bullets.add(bullet);
+			}, 
+		0);
 
 		scoreTracker = new ScoreTracker(15, 120);
 		add(scoreTracker);
+
+		aliveTimeStart = Sys.time();
 
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
+		aliveTimeEnd = Sys.time();
+		finalTime = aliveTimeEnd - aliveTimeStart;
+
 		FlxG.watch.addQuick('donutsDestroyed', destroyedDonuts);
-		FlxG.watch.addQuick('elapsedTime', HelperFunctions.truncateFloat(aliveTime, 2));
+		FlxG.watch.addQuick('elapsedTime', HelperFunctions.truncateFloat(finalTime, 2));
 		FlxG.watch.addQuick('activeTimer', spawnTimer.active);
 
-		super.update(elapsed);
-
 		updatePowerup();
+		checkDifficultyChange();
 
-		#if debug
-		if (FlxG.keys.justPressed.HOME)
-		{
-			startCurveDifficulty(3);
-		}
-		#end
-
-		// TIME SHIT
-		if (!diffTransition)
-		{
-			if (HelperFunctions.truncateFloat(aliveTime, 2) >= 5 && HelperFunctions.truncateFloat(aliveTime, 2) <= 10)
-				startCurveDifficulty(0);
-
-			if (HelperFunctions.truncateFloat(aliveTime, 2) >= 60 && HelperFunctions.truncateFloat(aliveTime, 2) <= 65)
-				startCurveDifficulty(1);
-
-			if (HelperFunctions.truncateFloat(aliveTime, 2) >= 180 && HelperFunctions.truncateFloat(aliveTime, 2) <= 185)
-				startCurveDifficulty(2);
-
-			if (HelperFunctions.truncateFloat(aliveTime, 2) >= 480 && HelperFunctions.truncateFloat(aliveTime, 2) <= 10)
-				startCurveDifficulty(3);
-		}
-
-		finalScore = score.calculateScore(HelperFunctions.truncateFloat(aliveTime, 2), score.donutHits, score.reachedInsane, score.xpDonutHits);
-
-		scoreText.text = "Score: " + finalScore;
+		finalScore = score.calculateScore(HelperFunctions.truncateFloat(finalTime, 2), score.donutHits, score.reachedInsane, score.xpDonutHits);
+		scoreText.text = '${Language.data.PlayState.score}: ' + finalScore;
 		
-		bullets.forEach(function(b:Bullet){b.velocity.y = GameInfo.bulletMoveVelocity;});
-		spawnTimer.time = HelperFunctions.truncateFloat(GameInfo.bulletTimerTime, 2);
+		//bullets.forEach(function(b:Bullet){b.velocity.y = Difficulty.settings.donutVelocity;});
+		spawnTimer.time = HelperFunctions.truncateFloat(Difficulty.settings.donutSpawnTime, 2);
 
 		if (!FlxG.sound.music.playing)
 			nowPlaying.playSong();
 
-		aliveTime += elapsed;
+		//aliveTime += elapsed;
 
-		// TO DO: REPLACE THIS WITH WORLDBOUNDS???
 		if (player.x >= maxX)
 			player.x = maxX;
 
@@ -257,36 +254,8 @@ class PlayState extends BeatState
 				donutHit(bullet, bullet.donutType);
 			}
 		});
-	}
 
-	public function spawnBullets()
-	{
-		spawnTimer = new FlxTimer().start(GameInfo.bulletTimerTime, function(tmr:FlxTimer)
-		{
-			var donutType:Int = 0;
-			var randomOffset:Int = HelperFunctions.getRandomInt(-50);
-
-			if (GameInfo.curDifficulty > 1)
-			{
-				if (FlxG.random.bool(25))
-				{
-					donutType = 1;
-				}
-				else if (FlxG.random.bool(5))
-				{
-					donutType = 2;
-				}
-				else if (FlxG.random.bool(1))
-				{
-					donutType = 3;
-				}
-			}
-
-			var bullet:Bullet = new Bullet(0, donutType);
-			bullet.x = Std.random(640);
-			bullet.y = randomOffset;
-			bullets.add(bullet);
-		}, 0);
+		super.update(elapsed);
 	}
 
 	public function initSubstate(substate:FlxSubState)
@@ -340,7 +309,7 @@ class PlayState extends BeatState
 
 			case 2:
 				score.xpDonutHits++;
-				scoreTracker.showScore("XP Donut Hit", 15);
+				scoreTracker.showScore(Language.data.PlayState.xp_donut_hit, 15);
 
 			case 3:
 				FlxG.sound.play("assets/sounds/regen" + GameInfo.audioExtension);
@@ -369,6 +338,24 @@ class PlayState extends BeatState
 		}
 	}
 
+	function checkDifficultyChange()
+	{
+		if (!diffTransition)
+		{
+			if (HelperFunctions.truncateFloat(finalTime, 2) >= 5 && HelperFunctions.truncateFloat(finalTime, 2) <= 10)
+				startCurveDifficulty(0);
+
+			if (HelperFunctions.truncateFloat(finalTime, 2) >= 60 && HelperFunctions.truncateFloat(finalTime, 2) <= 65)
+				startCurveDifficulty(1);
+
+			if (HelperFunctions.truncateFloat(finalTime, 2) >= 180 && HelperFunctions.truncateFloat(finalTime, 2) <= 185)
+				startCurveDifficulty(2);
+
+			if (HelperFunctions.truncateFloat(finalTime, 2) >= 480 && HelperFunctions.truncateFloat(finalTime, 2) <= 10)
+				startCurveDifficulty(3);
+		}
+	}
+
 	function startCurveDifficulty(diff:Int)
 	{
 		diffTransition = true;
@@ -378,23 +365,23 @@ class PlayState extends BeatState
 		{
 			case 0:
 				GameInfo.curDifficulty = 0;
-				GameInfo.bulletMoveVelocity = 80;
-				GameInfo.bulletTimerTime = 0.55;
+				//GameInfo.bulletMoveVelocity = 80;
+				//GameInfo.bulletTimerTime = 0.55;
 
-				changeDiffText("Welcome to Donut Dodger!" + "\nThe game might seem easy for now but" + "\ndon't get too comfortable!");
+				changeDiffText(Language.data.PlayState.diff_text[0]);
 			case 1:
 				GameInfo.curDifficulty = 1;
-				GameInfo.bulletMoveVelocity = 140;
-				GameInfo.bulletTimerTime = 0.30;
+				//GameInfo.bulletMoveVelocity = 140;
+				//GameInfo.bulletTimerTime = 0.30;
 
-				changeDiffText("Congratulations!\nYou passed the EASIEST level in the game.\nNow you might want to try a bit...");
+				changeDiffText(Language.data.PlayState.diff_text[1]);
 
 			case 2:
 				GameInfo.curDifficulty = 2;
-				GameInfo.bulletMoveVelocity = 175;
-				GameInfo.bulletTimerTime = 0.10;
+				//GameInfo.bulletMoveVelocity = 175;
+				//GameInfo.bulletTimerTime = 0.10;
 
-				changeDiffText("Now it gets real...");
+				changeDiffText(Language.data.PlayState.diff_text[2]);
 
 			case 3:
 				#if ng
@@ -405,12 +392,12 @@ class PlayState extends BeatState
 				#end
 
 				GameInfo.curDifficulty = 3;
-				GameInfo.bulletMoveVelocity = 200;
-				GameInfo.bulletTimerTime = 0.05;
+				//GameInfo.bulletMoveVelocity = 200;
+				//GameInfo.bulletTimerTime = 0.05;
 
 				score.reachedInsane++;
 
-				changeDiffText("Woah. You're insane.\nGood luck passing this though!");
+				changeDiffText(Language.data.PlayState.diff_text[3]);
 		}
 
 		layerBG.transition(diff);
@@ -431,6 +418,8 @@ class PlayState extends BeatState
 		}});
 	}
 
+	var boostCharging:Bool = false;
+
 	function updatePowerup()
 	{
 		if (GameInfo.equippedPowerup != Std.int(Math.NEGATIVE_INFINITY))
@@ -441,10 +430,8 @@ class PlayState extends BeatState
 					if (boostTime < 0)
 						boostTime = 0;
 
-					if (FlxG.keys.pressed.SHIFT)
+					if (FlxG.keys.pressed.SHIFT && !boostCharging)
 					{
-						trace(boostTime);
-
 						if (boostTime > 0)
 							player.boosted = true;
 						else
@@ -458,14 +445,19 @@ class PlayState extends BeatState
 
 						if (boostTime <= 5)
 						{
+							boostCharging = true;
 							boostTime += 0.02;
+						}
+						else
+						{
+							boostCharging = false;
 						}
 					}
 			}
 		}
 	}
 
-	function initPowerup()
+	function initPowerup():Void
 	{
 		if (GameInfo.equippedPowerup != Std.int(Math.NEGATIVE_INFINITY))
 		{
@@ -478,11 +470,13 @@ class PlayState extends BeatState
 				case 1:
 					trace("speed boost");
 					
-					var barBackground:FlxSprite = new FlxSprite(40, FlxG.height - 80).loadGraphic("assets/images/hud/powerups/bar.png");
+					var barBackground:FlxSprite = new FlxSprite(10, FlxG.height - 65).loadGraphic("assets/images/hud/powerups/bar.png");
+					barBackground.alpha = 0.6;
 					add(barBackground);
 
 					speedBar = new FlxBar(barBackground.x + 9, barBackground.y + 9, FlxBarFillDirection.LEFT_TO_RIGHT, 120, 32, this, "boostTime", 0, maxBoost);
 					speedBar.createFilledBar(FlxColor.TRANSPARENT, 0xFFFFFFFF);
+					speedBar.alpha = 0.6;
 					add(speedBar);
 			}
 		}

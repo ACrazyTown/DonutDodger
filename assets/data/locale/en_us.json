@@ -1,0 +1,62 @@
+{
+    "TitleState":
+    {
+        "intro_text": [
+            "A Crazy Town\n presents",
+            "DingDongDirt by\n Dorbellprod",
+            "Newgrounds is\n Swag and Awesome",
+            "AAA Gameplay\n -Literally Everyone"
+        ],
+        "menu_items": 
+        [
+            "PLAY", 
+            "OPTIONS", 
+            "SHOP"
+        ],
+        "logged_in": "[Logged in]",
+        "not_logged_in": "[Not logged in]",
+        "outdated": "[OUTDATED]"
+    },
+    "PlayState":
+    {
+        "score": "Score",
+        "xp_donut_hit": "XP Donut Hit",
+        "diff_text": [
+            "Welcome to Donut Dodger! \nThe game might seem easy for now but \ndon't get too comfortable!",
+            "Congratulations!\nYou passed the EASIEST level in the game.\nNow you might want to try a bit...",
+            "Now it gets real...",
+            "Woah. You're insane.\nGood luck passing this though!"
+        ]
+    },
+    "ExtrasState":
+    {
+        "ShopState":
+        {
+            "points": "Points",
+            "price": "Price",
+            "equip": "Equip",
+            "equipped": "Equipped",
+            "shop_items": [
+                ["Extra Life", "Gives you an extra life!"],
+                ["Speed Boost", "Gives you a temporary speed boost while holding SHIFT!"]
+            ]
+        }
+    },
+    "OptionsState":
+    {
+        "categories": ["SETTINGS", "MODS", "\nRETURN"],
+        "options": "Options"
+    },
+    "PauseSubstate":
+    {
+        "pause_items": ["Resume", "Reset the Stage", "Return to the Menu"],
+        "paused": "Paused"
+    },
+    "GameOverSubstate":
+    {
+        "gameover_options": ["Play Again", "Return to the Menu"],
+        "gameover": "Game Over",
+        "survived_for": "You survived for",
+        "best_time": "Best Time: "
+    }
+}

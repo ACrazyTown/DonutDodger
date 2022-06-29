@@ -1,0 +1,10 @@
+{
+    "manifest": {
+        "name":"My Test Mod",
+        "version": "1.0",
+        "author": "ACrazyTown"
+    },
+    "id": "testmod",
+    "api_version": "1.0",
+    "assets": {}
+}

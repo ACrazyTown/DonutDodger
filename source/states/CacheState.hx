@@ -1,4 +1,4 @@
-package;
+package states;
 
 import sys.thread.Thread;
 import sys.FileSystem;

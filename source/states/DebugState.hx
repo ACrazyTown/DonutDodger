@@ -1,5 +1,4 @@
-package;
-
+package states;
 import utils.Conductor;
 import utils.GameInfo;
 import props.hud.ScoreTracker;

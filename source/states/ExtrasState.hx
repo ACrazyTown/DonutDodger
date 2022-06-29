@@ -1,5 +1,6 @@
-package;
+package states;
 
+import utils.Language;
 import utils.GameInfo;
 import flixel.math.FlxMath;
 import flixel.util.FlxAxes;
@@ -15,7 +16,8 @@ import flixel.addons.transition.FlxTransitionableState;
 import utils.NGio;
 #end
 
-typedef PowerupData = {
+typedef PowerupData = 
+{
     id:Int,
     name:String,
     description:String,
@@ -25,7 +27,8 @@ typedef PowerupData = {
     equipped:Bool
 }
 
-typedef PowerupSave = {
+typedef PowerupSave = 
+{
     id:Int,
     unlocked:Bool,
     equipped:Bool
@@ -68,7 +71,7 @@ class ShopItem extends FlxSpriteGroup
 		nameText.antialiasing = false;
 		add(nameText);
 
-		priceText = new FlxText(nameText.x, nameText.y + 45, 0, "Price: " + price + " points", 24);
+		priceText = new FlxText(nameText.x, nameText.y + 45, 0, '${Language.data.ExtrasState.ShopState.price}: ' + price + ' ${Language.data.ExtrasState.ShopState.points.toLowerCase()}', 24);
 		add(priceText);
 
         bg.screenCenter(FlxAxes.Y);
@@ -91,26 +94,24 @@ class ShopItem extends FlxSpriteGroup
         {
             if (equipped)
             {
-                priceText.text = "Equipped";
+                priceText.text = Language.data.ExtrasState.ShopState.equipped;
             }
             else
             {
-                priceText.text = "Equip";
+                priceText.text = Language.data.ExtrasState.ShopState.equip;
             }
         }
         else
         {
-            priceText.text = "Price: " + price + " points";
+            priceText.text = '${Language.data.ExtrasState.ShopState.price}: ' + price + ' ${Language.data.ExtrasState.ShopState.points.toLowerCase()}';
         }
     }
 }
 
 class ShopState extends FlxTransitionableState
 {
-    public static var powerups:Array<PowerupData> = [
-        {id: 0, name: "Extra Life", description: "Gives you an extra life!", imageName: "additionalHeart", price: 1000, unlocked: false, equipped: false},
-        {id: 1, name: "Speed Boost", description: "Gives you a temporary speed boost whilst holding SHIFT!", imageName: "speedBoost", price: 2500, unlocked: false, equipped: false}
-    ];
+    // grrr double array access grrr
+    public static var powerups:Array<PowerupData> = [];
 
     public static var saveData:Array<PowerupSave> = [];
 
@@ -121,15 +122,18 @@ class ShopState extends FlxTransitionableState
 
     override function create()
     {
-        initSaveData();
+        // powerup initialization
+        powerups = [
+            {id: 0, name: Language.data.ExtrasState.ShopState.shop_items[0][0], description: Language.data.ExtrasState.ShopState.shop_items[0][1], imageName: "additionalHeart", price: 1000, unlocked: false, equipped: false},
+            {id: 1, name: Language.data.ExtrasState.ShopState.shop_items[1][0], description: Language.data.ExtrasState.ShopState.shop_items[1][1], imageName: "speedBoost", price: 2500, unlocked: false, equipped: false}
+        ];
 
-        trace(saveData);
+        initSaveData();
 
         for (i in 0...powerups.length)
         {
             powerups[i].unlocked = saveData[i].unlocked;
             powerups[i].equipped = saveData[i].equipped;
-            trace("UPDATED DATA FOR: " + i);
         }
 
         var bg:Background = new Background(-5.5, -25.8, "assets/images/bg/background.png");
@@ -150,7 +154,7 @@ class ShopState extends FlxTransitionableState
 			itemGroup.add(item);
         }
 
-		pointText = new FlxText(0, 5, 0, "Points: " + FlxG.save.data.points, 20);
+		pointText = new FlxText(0, 5, 0, '${Language.data.ExtrasState.ShopState.points}: ' + FlxG.save.data.points, 20);
 		pointText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
 		pointText.x = (FlxG.width - pointText.width) - 5;
 		add(pointText);
@@ -199,8 +203,6 @@ class ShopState extends FlxTransitionableState
             }
             else if (equippedPowerups.length <= 0)
             {
-                trace("LESS THAN 0??? NOTHING IS SELECTED??");
-
                 GameInfo.equippedPowerup = Std.int(Math.NEGATIVE_INFINITY);
             }
         }
@@ -209,9 +211,12 @@ class ShopState extends FlxTransitionableState
             if (powerups[curSelected].price <= Std.int(FlxG.save.data.points))
             {
                 FlxG.save.data.points = Std.int(FlxG.save.data.points) - powerups[curSelected].price;
-                pointText.text = "Points: " + FlxG.save.data.points;
+                //pointText.text = '${Language.data.ExtrasState.ShopState.points}: '+ FlxG.save.data.points;
+                updatePointsText();
 
                 // ka ching sound should go here
+                // Update March 11th 2022: Ka ching is finally real
+                FlxG.sound.play("assets/sounds/cashregister" + GameInfo.audioExtension);
 
                 powerups[curSelected].unlocked = true;
             }
@@ -231,9 +236,6 @@ class ShopState extends FlxTransitionableState
 
         FlxG.save.data.powerupData = saveData;
         FlxG.save.flush();
-
-        trace(FlxG.save.data.powerupData);
-        trace("Whatt??? " + GameInfo.equippedPowerup);
 
         #if ng
         var boughtPowerups = powerups.filter((powerup)-> powerup.unlocked);
@@ -272,6 +274,12 @@ class ShopState extends FlxTransitionableState
                 item.alpha = 1;
             }
         }
+    }
+
+    function updatePointsText()
+    {
+        pointText.text = '${Language.data.ExtrasState.ShopState.points}: ' + FlxG.save.data.points;
+        pointText.x = (FlxG.width - pointText.width) - 5;
     }
 
     function initSaveData()

@@ -31,8 +31,6 @@ class LifeHUD extends FlxSpriteGroup
 
             heartArray.push(heart);
         }
-
-        trace(heartArray);
     }
 
     public function updateLives(curLives:Int)

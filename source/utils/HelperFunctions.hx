@@ -33,10 +33,9 @@ class HelperFunctions
 		return textList;
 	}
 
-	public static function lengthToInt(arrayLength:Int)
+	public static function lengthToInt(arrayLength:Int):Int
 	{
 		var returnedInt:Int = arrayLength;
-
 		return returnedInt;
 	}
 }

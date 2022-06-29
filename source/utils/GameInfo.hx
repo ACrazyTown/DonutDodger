@@ -4,7 +4,7 @@ package utils;
 import io.newgrounds.NG;
 #end
 
-#if !hl
+#if VERCHECK
 import haxe.Http;
 #end
 
@@ -21,7 +21,7 @@ class GameInfo
 	public static var audioExtension:String = ".mp3";
 	#end
 
-    public static var gameVer:String = "1.1.1";
+    public static var gameVer:String = "1.2";
     public static var gotLatestVer:Bool = false;
     public static var verType:Int = 0;
 
@@ -29,9 +29,6 @@ class GameInfo
    // public static var gameDifficulty:Int = 1;
     public static var curDifficulty:Int = 0;
     //public static var gameStyle:Int = 1; - maybe one day
-
-    public static var bulletMoveVelocity:Float = 75;
-    public static var bulletTimerTime:Float = 0.50;
 
     public static var playerMoveVelocity:Int = 150;
 
@@ -57,6 +54,9 @@ class GameInfo
         if (FlxG.save.data.autoPause == null)
             FlxG.save.data.autoPause = true;
 
+        if (FlxG.save.data.scrollType == null)
+            FlxG.save.data.scrollType = 0;
+
         FlxG.autoPause = FlxG.save.data.autoPause;
         GameInfo.equippedPowerup = FlxG.save.data.equippedPowerup;
 
@@ -71,6 +71,7 @@ class GameInfo
         FlxG.save.data.altHitboxes = true;
         FlxG.save.data.points = 0;
         FlxG.save.data.autoPause = false;
+        FlxG.save.data.scrollType = 0;
 
         trace("Should've reset data!!");
     }
@@ -126,7 +127,7 @@ class GameInfo
 
         versionRequest.request();
         #else
-        trace("no ver checkin i guess");
+        trace("unsupported target for version check");
         #end
     }
 }

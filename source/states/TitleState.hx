@@ -1,5 +1,8 @@
-package;
+package states;
 
+import utils.mods.ModManager;
+import utils.GameAssets;
+import utils.Language;
 import lime.app.Application;
 import flixel.effects.FlxFlicker;
 import flixel.addons.transition.TransitionData;
@@ -40,11 +43,10 @@ class TitleState extends BeatState
     var skippedIntro:Bool = false;
 
 	var curSelected:Int = 0;
-    var curDifficulty:Int = 1;
-
     var transitioning:Bool = false;
 
-    var menuOptions:Array<String> = ["PLAY", "OPTIONS", "SHOP"];
+    // ["PLAY", "OPTIONS", "EXTRAS"]
+    var menuOptions:Array<String> = ["PLAY", "OPTIONS", "EXTRAS"];
     var menuGroup:FlxTypedGroup<FlxText>;
 
     var resetHold:Bool = false;
@@ -54,7 +56,8 @@ class TitleState extends BeatState
 
 	override public function create()
 	{
-		FlxG.mouse.visible = false;
+        FlxG.game.focusLostFramerate = 60;
+		FlxG.mouse.visible = false;   
         FlxG.save.bind("donutdodger", "acrazytown");
 
 		if (!Global.titleInit)
@@ -71,7 +74,15 @@ class TitleState extends BeatState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
+            GameAssets.init();
+
+            Language.init("en_us");
             GameInfo.initSave();
+
+            ModManager.init();
+
+            // language specific
+            //menuOptions = Language.data.TitleState.menu_items;
 
             #if ng
             trace("NGio is active");
@@ -82,6 +93,10 @@ class TitleState extends BeatState
 			Global.titleInit = true;
 		}
 
+        //Mods.init();
+
+        menuOptions = Language.data.TitleState.menu_items;
+
 		versionTxt = new FlxText(0, (FlxG.height - 20), 0, "", 14);
 
 		#if ng
@@ -89,17 +104,16 @@ class TitleState extends BeatState
 
         if (NGio.loggedIn)
         {
-            versionTxt.text = "v" + GameInfo.gameVer + " [Logged in]";
+            versionTxt.text = "v" + GameInfo.gameVer + " " + Language.data.TitleState.logged_in;
         }
 		else
 		{
-            versionTxt.text = "v" + GameInfo.gameVer + " [Not logged in]";
+            versionTxt.text = "v" + GameInfo.gameVer + " " + Language.data.TitleState.not_logged_in;
         }
         #else
 		versionTxt.text = "v" + GameInfo.gameVer + "";
         #end
 
-        trace("DUMBASS: " + FlxG.save.data.points);
 
         #if ng
 		if (NGio.loggedIn)
@@ -112,7 +126,7 @@ class TitleState extends BeatState
         switch (GameInfo.verType)
         {
             case 1:
-              versionTxt.text += " [OUTDATED]";
+              versionTxt.text += " " + Language.data.TitleState.outdated;
         }
 
         if (firstTime)
@@ -128,7 +142,7 @@ class TitleState extends BeatState
             if (!GameInfo.gotLatestVer)
 			    GameInfo.getLatestVersion();
 
-            introText = new FlxText(0, 0, 0, "A Crazy Town\n presents", 28);
+            introText = new FlxText(0, 0, 0, Language.data.TitleState.intro_text[0], 28);
             introText.alignment = FlxTextAlign.CENTER;
             introText.screenCenter();
             add(introText);
@@ -186,11 +200,11 @@ class TitleState extends BeatState
         #if ng
         if (NGio.loggedIn)
         {
-            versionTxt.text = "v" + GameInfo.gameVer + " [Logged in]";
+            versionTxt.text = "v" + GameInfo.gameVer + " " + Language.data.TitleState.logged_in;
         }
 		else
 		{
-            versionTxt.text = "v" + GameInfo.gameVer + " [Not logged in]";
+            versionTxt.text = "v" + GameInfo.gameVer + " " + Language.data.TitleState.not_logged_in;
         }
         #else
 		versionTxt.text = "v" + GameInfo.gameVer + "";
@@ -223,23 +237,6 @@ class TitleState extends BeatState
                 goToState();
             }
 
-            /*
-            if (FlxG.keys.pressed.DELETE && !resetHold)
-            {
-                resetHold = true;
-                resetTimer += elapsed;
-
-                if (resetTimer >= 3)
-                    trace("SHOULD'VE RESET DATA!");
-                    new FlxTimer().start(2, function(t:FlxTimer) 
-                    {
-                        resetHold = false;
-                    }); // 2s cooldown so that it doesn't erase data in a loop
-            }
-            else {
-                resetTimer = 0;
-            }
-            */
 		}
         else
         {
@@ -259,20 +256,18 @@ class TitleState extends BeatState
 
     override function customBeatHit():Void
     {
-        FlxG.log.add(curBeat);
-
         if (!skippedIntro)
         {
             switch (curBeat)
             {
                 case 4:
-                    introText.text = "DingDongDirt by\n Dorbellprod";
+                    introText.text = Language.data.TitleState.intro_text[1];
                 
                 case 8:
-                    introText.text = "Newgrounds is\n Swag and Awesome";
+                    introText.text = Language.data.TitleState.intro_text[2];
 
                 case 12:
-                    introText.text = "AAA Gameplay\n -Literally Everyone";
+                    introText.text = Language.data.TitleState.intro_text[3];
 
                 case 16:
                     skipIntro();

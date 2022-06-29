@@ -1,17 +1,12 @@
 package utils;
 
-import flixel.FlxBasic;
-
-class Score extends FlxBasic
+class Score
 {
 	public var donutHits:Int = 0;
 	public var xpDonutHits:Int = 0;
 	public var reachedInsane:Int = 0; // Int because it's easy and im dumb
 
-	public function new()
-	{
-		super();
-	}
+	public function new() {}
 
 	public function calculateScore(timeSurvived:Float, donutHits:Int, isInsane:Int, xpDonutHits:Int)
 	{

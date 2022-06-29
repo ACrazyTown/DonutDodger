@@ -1,5 +1,21 @@
 # Donut Dodger Changelog
 
+# 1.2
+## Added
+- All | Modding System.
+    - Easily replace make mods without messing with the source code!
+    - Brand new (bad) mod system from scratch!
+- All | Strings are now stored in .json files, allowing for translations among other things.
+- All | Added new Donut type: Ice Donut!
+
+## Changed
+- All | Nerfed Speed Boost powerup.
+- All | Changed the way the time is counted.
+- All | Changed the way Donuts spawn.
+
+## Bugfixes
+- None
+
 # 1.1.1
 ## Added
 - Desktop | Resolution increase.
