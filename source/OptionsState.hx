@@ -62,6 +62,7 @@ class OptionsState extends BeatState
     {
         super.update(elapsed);
 
+		/*
 		if (FlxG.keys.anyJustPressed([UP, W]))
 			changeSelection(-1);
 
@@ -72,6 +73,7 @@ class OptionsState extends BeatState
         {
             doOption();
         }
+		*/
     }
 
 	function changeSelection(change:Int = 0)

@@ -5,7 +5,7 @@ import flixel.FlxSprite;
 
 import utils.GameInfo;
 
-class Bullet extends FlxSprite
+class Bullet extends MobileSprite
 {
 	public static var useAltHitbox:Bool;
     public var donutType:Int = 0;

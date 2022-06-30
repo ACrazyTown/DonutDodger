@@ -27,13 +27,13 @@ class ScoreTracker extends FlxSpriteGroup
 
 	public function new(X:Float, Y:Float)
 	{
-		x = X;
-		y = Y;
+		x = DP.getX(X);
+		y = DP.getY(Y);
 		defaultY = y;
 
         //scoreTextArray = []; // clearing the array to get rid of objects that might've not gotten destroyed
 
-		super(x, y);
+		super(DP.getX(x), DP.getY(y));
 	}
 
     public function showScore(bonusType:String, grantAmount:Int, ?tweenTime:Float = 1.75)
@@ -53,7 +53,7 @@ class ScoreTracker extends FlxSpriteGroup
 
         FlxTween.tween(sText, {y: (defaultY - scoreTextArray.length / 0.15)}, tweenTime, {ease: FlxEase.expoOut, onComplete: function(t:FlxTween) 
         {
-            FlxTween.tween(sText, {y: sText.y + 5, alpha: 0}, 1, {onComplete: function(t:FlxTween)
+            FlxTween.tween(sText, {y: DP.getY(sText.y + 5), alpha: 0}, 1, {onComplete: function(t:FlxTween)
             {
                 //active = false;
                 sText.y = defaultY;

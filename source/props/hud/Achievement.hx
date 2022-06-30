@@ -9,7 +9,7 @@ class AchievementBox extends FlxSpriteGroup
 {
     public function new(X:Float = 0, Y:Float = 0, icon:FlxGraphicAsset)
     {
-        super(X, Y);
+        super(DP.getX(X), DP.getY(Y));
 
         var box = new FlxSprite(0, 0).makeGraphic(375, 76, 0xFF000000);
 		//box.screenCenter(X);

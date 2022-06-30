@@ -60,6 +60,7 @@ class PauseSubstate extends FlxSubState
 
     override function update(elapsed:Float)
     {
+        /*
 		if (FlxG.keys.anyJustPressed([UP, W]))
 			changeSelection(-1);
 
@@ -70,6 +71,7 @@ class PauseSubstate extends FlxSubState
         {
             doOption();
         }
+        */
 
         super.update(elapsed);
     }

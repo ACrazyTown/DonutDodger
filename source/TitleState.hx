@@ -1,5 +1,6 @@
 package;
 
+//import mobile.ui.TouchButton;
 import lime.app.Application;
 import flixel.effects.FlxFlicker;
 import flixel.addons.transition.TransitionData;
@@ -54,7 +55,9 @@ class TitleState extends BeatState
 
 	override public function create()
 	{
+        #if FLX_MOUSE
 		FlxG.mouse.visible = false;
+        #end
         FlxG.save.bind("donutdodger", "acrazytown");
 
 		if (!Global.titleInit)
@@ -82,7 +85,7 @@ class TitleState extends BeatState
 			Global.titleInit = true;
 		}
 
-		versionTxt = new FlxText(0, (FlxG.height - 20), 0, "", 14);
+		versionTxt = new FlxText(DP.getX(0), DP.getY(FlxG.height - 20), 0, "", 14);
 
 		#if ng
         trace(NGio.loggedIn);
@@ -128,7 +131,7 @@ class TitleState extends BeatState
             if (!GameInfo.gotLatestVer)
 			    GameInfo.getLatestVersion();
 
-            introText = new FlxText(0, 0, 0, "A Crazy Town\n presents", 28);
+            introText = new FlxText(DP.getX(0), DP.getY(0), 0, "A Crazy Town\n presents", 28);
             introText.alignment = FlxTextAlign.CENTER;
             introText.screenCenter();
             add(introText);
@@ -153,7 +156,9 @@ class TitleState extends BeatState
     {
 		skippedIntro = true;
 
-		var bg:Background = new Background(-5.5, -25.8, "assets/images/bg/background.png");
+        //var test:TouchButton = new TouchButton(200, 350);
+
+		var bg:Background = new Background(DP.getX(0), DP.getY(0), "assets/images/bg/background.png");
 		bg.addAdditionalImageAssets([[-11.35, -53.15]], [['assets/images/bg/circles.png']]);
 		bg.tweenAsset(bg.additionalAssets[0], {y: -836.55}, 35, null, true);
 		add(bg);
@@ -161,7 +166,7 @@ class TitleState extends BeatState
 		menuGroup = new FlxTypedGroup<FlxText>();
 		add(menuGroup);
 
-		var logo:FlxSprite = new FlxSprite(0, 20).loadGraphic("assets/images/logo.png");
+		var logo:FlxSprite = new FlxSprite(DP.getX(0), DP.getY(20)).loadGraphic("assets/images/logo.png");
 		logo.screenCenter(X);
 		logo.antialiasing = true;
 		add(logo);
@@ -170,7 +175,7 @@ class TitleState extends BeatState
 
 		for (i in 0...menuOptions.length)
 		{
-			var menuText:FlxText = new FlxText(0, (i * 70), 0, menuOptions[i], 32);
+			var menuText:FlxText = new FlxText(DP.getX(0), DP.getY(i * 70), 0, menuOptions[i], 32);
 			menuText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4);
 			menuText.y += 280;
 			menuText.screenCenter(X);
@@ -179,6 +184,7 @@ class TitleState extends BeatState
 		}
 
 		changeSelection(0, true);
+        //add(test);
     }
 
 	override public function update(elapsed:Float)
@@ -210,6 +216,7 @@ class TitleState extends BeatState
                 }
             }
 
+            /*
             if (FlxG.keys.anyJustPressed([UP, W]))
                 changeSelection(-1);
 
@@ -223,7 +230,6 @@ class TitleState extends BeatState
                 goToState();
             }
 
-            /*
             if (FlxG.keys.pressed.DELETE && !resetHold)
             {
                 resetHold = true;
@@ -243,10 +249,12 @@ class TitleState extends BeatState
 		}
         else
         {
+            /*
             if (FlxG.keys.justPressed.ENTER)
             {
                 skipIntro();
             }
+            */
         }
 
 		Conductor.songPosition = FlxG.sound.music.time;
@@ -315,20 +323,15 @@ class TitleState extends BeatState
         {
             if (item.ID != curSelected)
             {
-                FlxTween.tween(item, {alpha: 0, y: item.y + 15}, 1, {ease: FlxEase.quadOut});
+                FlxTween.tween(item, {alpha: 0, y: DP.getY(item.y + 15)}, 1, {ease: FlxEase.quadOut});
             }
         }
 
         switch (curSelected)
         {
-            case 0:
-                state = new PlayState();
-
-            case 1:
-                state = new OptionsState();
-
-            case 2:
-                state = new ExtrasState.ShopState();
+            case 0: state = new PlayState();
+            case 1: state = new OptionsState();
+            case 2: state = new ExtrasState.ShopState();
         }
 
         new FlxTimer().start(1.25, function(t:FlxTimer) 

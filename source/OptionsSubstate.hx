@@ -57,12 +57,14 @@ class OptionsSubstate extends FlxSubState
 
     override function update(elapsed:Float)
     {
+        /*
         if (FlxG.keys.justPressed.ENTER)
             doOption();
         if (FlxG.keys.justPressed.DOWN)
             changeSelection(1);
         if (FlxG.keys.justPressed.UP)
             changeSelection(-1);
+        */
 
         super.update(elapsed);
 

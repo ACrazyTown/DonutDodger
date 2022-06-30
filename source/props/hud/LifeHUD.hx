@@ -7,18 +7,19 @@ class LifeHUD extends FlxSpriteGroup
 {
     var heartAmount:Int = 3;
 
-    var heartArray:Array<FlxSprite> = [];
+    var heartArray:Array<MobileSprite> = [];
 
     public function new(X:Float = 0, Y:Float = 0, equippedPowerup:Int)
     {
-        super(X, Y);
+        super(DP.getX(X), DP.getY(Y));
 
         if (equippedPowerup == 0)
             heartAmount = 4; // it's supposed to be 4, but it's 3 because it starts from 0
         
         for (i in 0...heartAmount)
         {
-            var heart:FlxSprite = new FlxSprite(X, Y).loadGraphic("assets/images/hud/heart.png", true, 22, 20);
+            var heart:MobileSprite = new MobileSprite(X, Y);
+            heart.loadGraphic("assets/images/hud/heart.png", true, 22, 20);
             heart.ID = i;
             heart.animation.add("normal", [0]);
             heart.animation.add("broken", [1]);

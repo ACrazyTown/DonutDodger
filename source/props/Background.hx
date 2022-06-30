@@ -27,7 +27,7 @@ class Background extends FlxSpriteGroup
     {
         super(x, y);
 
-        bg = new FlxSprite(x, y).loadGraphic(imagePath);
+        bg = new FlxSprite(DP.getX(x),DP.getY(y)).loadGraphic(imagePath);
         add(bg);
     }
 

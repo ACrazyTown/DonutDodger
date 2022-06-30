@@ -1,5 +1,9 @@
 package;
 
+#if android
+import android.Hardware;
+#end
+
 import props.hud.Achievement.AchievementBox;
 import flixel.group.FlxSpriteGroup;
 import props.hud.ScoreTracker;
@@ -183,7 +187,7 @@ class PlayState extends BeatState
 
 		updatePowerup();
 
-		#if debug
+		#if (debug && !android)
 		if (FlxG.keys.justPressed.HOME)
 		{
 			startCurveDifficulty(3);
@@ -225,6 +229,7 @@ class PlayState extends BeatState
 		if (player.x <= 0)
 			player.x = 0;
 
+		/*
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			initSubstate(new PauseSubstate());
@@ -241,6 +246,7 @@ class PlayState extends BeatState
 			FlxG.debugger.drawDebug = !FlxG.debugger.drawDebug;
 		}
 		#end
+		*/
 
 		bullets.forEachAlive(function(bullet:Bullet)
 		{
@@ -310,8 +316,12 @@ class PlayState extends BeatState
 
 				lifeHUD.updateLives(player.lives);
 				player.animation.play("dead");
-
 				FlxG.camera.shake(0.0075, 0.25);
+
+				#if android
+				Hardware.vibrate(250);
+				#end
+
 				if (player.lives > 0)
 				{
 					new FlxTimer().start(0.25, function(tmr:FlxTimer)
@@ -328,8 +338,12 @@ class PlayState extends BeatState
 
 				lifeHUD.updateLives(player.lives);
 				player.animation.play("dead");
-
 				FlxG.camera.shake(0.0025, 0.25);
+
+				#if android
+				Hardware.vibrate(250);
+				#end
+
 				if (player.lives > 0)
 				{
 					new FlxTimer().start(0.25, function(tmr:FlxTimer)
@@ -441,6 +455,7 @@ class PlayState extends BeatState
 					if (boostTime < 0)
 						boostTime = 0;
 
+					/*
 					if (FlxG.keys.pressed.SHIFT)
 					{
 						trace(boostTime);
@@ -452,6 +467,7 @@ class PlayState extends BeatState
 
 						boostTime -= 0.04;
 					}
+					*/
 					else
 					{
 						player.boosted = false;
@@ -477,7 +493,7 @@ class PlayState extends BeatState
 
 				case 1:
 					trace("speed boost");
-					
+
 					var barBackground:FlxSprite = new FlxSprite(40, FlxG.height - 80).loadGraphic("assets/images/hud/powerups/bar.png");
 					add(barBackground);
 

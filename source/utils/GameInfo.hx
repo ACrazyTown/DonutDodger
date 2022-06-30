@@ -15,11 +15,7 @@ using StringTools;
 class GameInfo 
 {
 	// extension shit lmao
-	#if desktop
-	public static var audioExtension:String = ".ogg";
-	#else
-	public static var audioExtension:String = ".mp3";
-	#end
+	public static var audioExtension:String = #if (cpp || hl) ".ogg" #else ".mp3" #end;
 
     public static var gameVer:String = "1.1.1";
     public static var gotLatestVer:Bool = false;

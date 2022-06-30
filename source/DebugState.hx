@@ -75,6 +75,7 @@ class DebugState extends BeatState
 
         super.update(elapsed);
 
+        /*
         if (FlxG.keys.justPressed.M && FlxG.sound.music.playing)
         {
             FlxG.sound.music.stop();
@@ -95,6 +96,7 @@ class DebugState extends BeatState
             FlxG.sound.music.stop();
             FlxG.switchState(new TitleState());
         }
+        */
     }
 
     override function customStepHit():Void

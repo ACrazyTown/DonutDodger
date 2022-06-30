@@ -22,16 +22,17 @@ class SongPopup extends FlxSpriteGroup
 
 	public static var nowPlayingTxt:FlxText;
 
-	public var container:FlxSprite;
+	public var container:MobileSprite;
 
 	public function new(x:Float, y:Float)
 	{
 		super();
 
-		container = new FlxSprite(x, y).makeGraphic(340, 120, FlxColor.BLACK);
+		container = new MobileSprite(x, y);
+		container.makeGraphic(340, 120, FlxColor.BLACK);
 		add(container);
 
-		nowPlayingTxt = new FlxText(container.x + 10, container.y + 10, 0, "", 20);
+		nowPlayingTxt = new FlxText(DP.getX(container.x + 10), DP.getY(container.y + 10), 0, "", 20);
 		add(nowPlayingTxt);
 	}
 }
@@ -63,7 +64,7 @@ class NowPlaying extends FlxGroup
 		// 640
 		super();
 
-		popup = new SongPopup(300, 40);
+		popup = new SongPopup(DP.getX(300), DP.getY(40));
         popup.container.alpha = 0.6;
 		popup.alpha = 0;
 		add(popup);

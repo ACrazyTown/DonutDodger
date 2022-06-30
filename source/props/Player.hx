@@ -1,11 +1,10 @@
 package props;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 
 import utils.GameInfo;
 
-class Player extends FlxSprite
+class Player extends MobileSprite
 {
     public static var useAltHitbox:Bool;
 
@@ -50,14 +49,17 @@ class Player extends FlxSprite
 
         if (!boosted)
         {
+            /*
             if (FlxG.keys.anyPressed([LEFT, A]))
                 velocity.x = -vel;
 
             if (FlxG.keys.anyPressed([RIGHT, D]))
                 velocity.x = vel;
+            */
         }
         else
         {
+            /*
             if (FlxG.keys.anyPressed([LEFT, A]))
             {
                 velocity.x = -(vel + 50);
@@ -70,6 +72,7 @@ class Player extends FlxSprite
                 angle = 25;
                 //FlxTween.tween(this, {angle: 25}, 0.25);
             }
+            */
         }
 
         super.update(elapsed);

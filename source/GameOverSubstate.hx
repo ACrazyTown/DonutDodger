@@ -17,7 +17,6 @@ import utils.HelperFunctions;
 import utils.NGio;
 #end
 
-
 class GameOverSubstate extends FlxSubState
 {
 	var controlsArray:Array<String> = ["Play Again", "Return to the Menu"];
@@ -126,6 +125,7 @@ class GameOverSubstate extends FlxSubState
 		updateScore();
 		updateScoreText();
 
+		/*
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			doOption();
@@ -136,6 +136,7 @@ class GameOverSubstate extends FlxSubState
 
 		if (FlxG.keys.anyJustPressed([DOWN, S]))
 			changeSelection(1);
+		*/
 	}
 
 	function changeSelection(change:Int = 0, ?noSound:Bool = false)

@@ -160,6 +160,7 @@ class ShopState extends FlxTransitionableState
 
     override function update(elapsed:Float)
     {
+        /*
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			onEnter();
@@ -177,6 +178,7 @@ class ShopState extends FlxTransitionableState
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.switchState(new TitleState());
 
+        */
         super.update(elapsed);
     }
 
