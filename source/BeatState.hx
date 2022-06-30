@@ -7,7 +7,7 @@ import utils.Conductor;
 * This is stolen from like the FNF init commit
 */
 
-class BeatState extends FlxTransitionableState
+class BeatState extends BaseState
 {
 	//var init:Bool = false;
 	var curBeat:Int = 0;

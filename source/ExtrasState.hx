@@ -105,7 +105,7 @@ class ShopItem extends FlxSpriteGroup
     }
 }
 
-class ShopState extends FlxTransitionableState
+class ShopState extends BaseState
 {
     public static var powerups:Array<PowerupData> = [
         {id: 0, name: "Extra Life", description: "Gives you an extra life!", imageName: "additionalHeart", price: 1000, unlocked: false, equipped: false},

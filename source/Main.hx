@@ -9,9 +9,6 @@ import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 
-@:bitmap("assets/images/a_background.png")
-class BackgroundImage extends BitmapData {}
-
 class Main extends Sprite
 {
 	var gameWidth:Int = 640; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
@@ -77,7 +74,6 @@ class Main extends Sprite
 		initialState = TitleState;
 		#end
 
-		addChild(new Bitmap(new BackgroundImage(0, 0)));
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
 		#if !mobile

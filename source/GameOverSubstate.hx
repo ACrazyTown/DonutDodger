@@ -17,7 +17,7 @@ import utils.HelperFunctions;
 import utils.NGio;
 #end
 
-class GameOverSubstate extends FlxSubState
+class GameOverSubstate extends BaseSubState
 {
 	var controlsArray:Array<String> = ["Play Again", "Return to the Menu"];
 	var controlsTxtGroup:FlxTypedGroup<FlxText>;

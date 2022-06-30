@@ -17,7 +17,7 @@ import props.Background;
 * Mess, but fuck it
 */
 
-class OptionsSubstate extends FlxSubState
+class OptionsSubstate extends BaseSubState
 {
     var options:Array<Dynamic> = [
         ["Settings", 

@@ -12,7 +12,7 @@ import props.NowPlaying;
 
 import utils.GameInfo;
 
-class PauseSubstate extends FlxSubState
+class PauseSubstate extends BaseSubState
 {
     var pauseOptions:Array<String> = ["Resume", "Reset the Stage", "Return to the Menu"];
     var pauseTxtGroup:FlxTypedGroup<FlxText>;
